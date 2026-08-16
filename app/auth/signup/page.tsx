@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import Link from 'next/link'
 import Logo from '@/components/Logo'
+import { track } from '@vercel/analytics'
 
 export default function SignupPage() {
   const router = useRouter()
@@ -159,6 +160,7 @@ export default function SignupPage() {
 
       if (vendorError) throw vendorError
 
+      track('vendor_signup', { shop_name: formData.shop_name, category: 'signup_complete' })
       setSuccess(true)
 
       if (authData.session) {

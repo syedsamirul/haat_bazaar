@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { Vendor, Product } from '@/lib/types'
 import Link from 'next/link'
+import { track } from '@vercel/analytics'
 
 export default function VendorDetailPage() {
   const params = useParams()
@@ -113,6 +114,7 @@ export default function VendorDetailPage() {
             href={instagramUrl}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => track('visit_instagram', { vendor_id: vendor.id, shop_name: vendor.shop_name })}
             className="flex-1 bg-flash hover:bg-flash-dark text-[#17140f] font-bold text-xs uppercase tracking-wide py-3 rounded-lg text-center transition-colors"
           >
             Visit on Instagram
@@ -122,6 +124,7 @@ export default function VendorDetailPage() {
               href={`https://wa.me/${vendor.whatsapp_number.replace(/^\+/, '')}`}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => track('contact_whatsapp', { vendor_id: vendor.id, shop_name: vendor.shop_name })}
               className="flex-1 border border-line hover:border-ink-muted text-ink font-bold text-xs uppercase tracking-wide py-3 rounded-lg text-center transition-colors"
             >
               WhatsApp
@@ -147,6 +150,7 @@ export default function VendorDetailPage() {
                   href={instagramUrl}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => track('product_click', { vendor_id: vendor.id, product_name: product.name })}
                   className="group block"
                 >
                   <div className="aspect-square bg-surface-2 rounded-lg overflow-hidden mb-2 relative">
