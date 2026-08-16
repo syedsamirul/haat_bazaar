@@ -61,24 +61,24 @@ export default function NewProductPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-2xl mx-auto px-4 py-8">
-        <Link href="/vendor/dashboard" className="text-amber-600 hover:text-amber-700 mb-6">
-          ← Back to Dashboard
+    <div className="min-h-screen bg-canvas text-ink">
+      <div className="max-w-xl mx-auto px-5 py-8">
+        <Link href="/vendor/dashboard" className="text-xs text-ink-muted hover:text-ink transition-colors">
+          ← Back to dashboard
         </Link>
 
-        <div className="bg-white rounded-lg shadow-md p-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-6">Add New Product</h1>
+        <div className="bg-surface border border-line rounded-lg p-8 mt-6">
+          <h1 className="font-bold text-xl uppercase tracking-tight mb-6">Add new product</h1>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
-              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+              <div className="bg-surface-2 border border-flash/40 text-flash px-4 py-3 rounded-lg text-sm">
                 {error}
               </div>
             )}
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-xs uppercase tracking-wide text-ink-muted mb-2">
                 Product Name *
               </label>
               <input
@@ -87,28 +87,28 @@ export default function NewProductPage() {
                 value={formData.name}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                className="w-full px-4 py-2 bg-surface-2 border border-line rounded-lg text-sm text-ink focus:outline-none focus:border-flash"
                 placeholder="e.g., Handmade Saree"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-xs uppercase tracking-wide text-ink-muted mb-2">
                 Description
               </label>
               <textarea
                 name="description"
                 value={formData.description}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                className="w-full px-4 py-2 bg-surface-2 border border-line rounded-lg text-sm text-ink focus:outline-none focus:border-flash"
                 placeholder="Tell customers about this product..."
                 rows={4}
               />
             </div>
 
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-xs uppercase tracking-wide text-ink-muted mb-2">
                   Price (৳) *
                 </label>
                 <input
@@ -119,20 +119,20 @@ export default function NewProductPage() {
                   required
                   step="0.01"
                   min="0"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                  className="w-full px-4 py-2 bg-surface-2 border border-line rounded-lg text-sm text-ink font-mono focus:outline-none focus:border-flash"
                   placeholder="0"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-xs uppercase tracking-wide text-ink-muted mb-2">
                   Category
                 </label>
                 <select
                   name="category"
                   value={formData.category}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                  className="w-full px-4 py-2 bg-surface-2 border border-line rounded-lg text-sm text-ink focus:outline-none focus:border-flash"
                 >
                   <option value="clothing">Clothing</option>
                   <option value="accessories">Accessories</option>
@@ -145,7 +145,7 @@ export default function NewProductPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-xs uppercase tracking-wide text-ink-muted mb-2">
                 Image URL
               </label>
               <input
@@ -153,11 +153,11 @@ export default function NewProductPage() {
                 name="image_url"
                 value={formData.image_url}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                className="w-full px-4 py-2 bg-surface-2 border border-line rounded-lg text-sm text-ink focus:outline-none focus:border-flash"
                 placeholder="https://example.com/image.jpg"
               />
               {formData.image_url && (
-                <div className="mt-4 aspect-square bg-gray-200 rounded-lg overflow-hidden max-w-xs">
+                <div className="mt-4 aspect-square bg-surface-2 rounded-lg overflow-hidden max-w-xs">
                   <img
                     src={formData.image_url}
                     alt="Preview"
@@ -171,13 +171,13 @@ export default function NewProductPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="flex-1 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+                className="flex-1 bg-flash hover:bg-flash-dark disabled:opacity-50 text-[#17140f] font-bold text-sm uppercase tracking-wide py-3 rounded-lg transition-colors"
               >
-                {loading ? 'Creating...' : 'Create Product'}
+                {loading ? 'Creating...' : 'Create product'}
               </button>
               <Link
                 href="/vendor/dashboard"
-                className="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-900 font-semibold py-2 px-4 rounded-lg text-center transition-colors"
+                className="flex-1 border border-line hover:border-ink-muted text-ink font-bold text-sm uppercase tracking-wide py-3 rounded-lg text-center transition-colors"
               >
                 Cancel
               </Link>

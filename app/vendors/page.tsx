@@ -46,24 +46,33 @@ export default function VendorsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-8">
-          Find Vendors
+    <main className="min-h-screen bg-canvas text-ink">
+      <nav className="flex justify-between items-center px-5 py-4 border-b border-line max-w-5xl mx-auto">
+        <a href="/" className="font-bold text-sm tracking-widest uppercase">
+          Haat Bazaar
+        </a>
+        <a href="/auth/signup" className="text-xs text-ink-muted hover:text-ink transition-colors">
+          Sell
+        </a>
+      </nav>
+
+      <div className="max-w-5xl mx-auto px-5 py-8">
+        <h1 className="font-bold text-xl uppercase tracking-tight mb-6">
+          Browse vendors
         </h1>
 
         <SearchBar onFiltersChange={setFilters} />
 
         {loading ? (
-          <div className="text-center py-12">
-            <p className="text-gray-600">Loading vendors...</p>
+          <div className="text-center py-16">
+            <p className="text-ink-muted text-sm">Loading vendors...</p>
           </div>
         ) : vendors.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-gray-600">No vendors found</p>
+          <div className="text-center py-16">
+            <p className="text-ink-muted text-sm">No vendors found</p>
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {vendors.map((vendor) => (
               <VendorCard key={vendor.id} vendor={vendor} />
             ))}

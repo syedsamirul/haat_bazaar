@@ -166,43 +166,43 @@ export default function EditProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <p className="text-gray-600">Loading...</p>
+      <div className="min-h-screen bg-canvas text-ink flex items-center justify-center">
+        <p className="text-ink-muted text-sm">Loading...</p>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-2xl mx-auto px-4 py-8">
-        <Link href="/vendor/dashboard" className="text-amber-600 hover:text-amber-700 mb-6 inline-block">
-          ← Back to Dashboard
+    <div className="min-h-screen bg-canvas text-ink">
+      <div className="max-w-xl mx-auto px-5 py-8">
+        <Link href="/vendor/dashboard" className="text-xs text-ink-muted hover:text-ink mb-6 inline-block transition-colors">
+          ← Back to dashboard
         </Link>
 
-        <div className="bg-white rounded-lg shadow-md p-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-6">Edit Profile</h1>
+        <div className="bg-surface border border-line rounded-lg p-8">
+          <h1 className="font-bold text-xl uppercase tracking-tight mb-6">Edit profile</h1>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
-              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded text-sm">
+              <div className="bg-surface-2 border border-flash/40 text-flash px-4 py-3 rounded-lg text-sm">
                 {error}
               </div>
             )}
 
             {saved && (
-              <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded text-sm">
+              <div className="bg-surface-2 border border-flash/40 text-flash px-4 py-3 rounded-lg text-sm">
                 Profile updated successfully!
               </div>
             )}
 
             {/* Profile Picture */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Profile Picture
+              <label className="block text-xs uppercase tracking-wide text-ink-muted mb-2">
+                Profile picture
               </label>
               <div className="flex items-center gap-4">
                 {previewUrl ? (
-                  <div className="w-24 h-24 rounded-lg overflow-hidden border-2 border-amber-300">
+                  <div className="w-24 h-24 rounded-lg overflow-hidden border border-flash">
                     <img
                       src={previewUrl}
                       alt="Profile preview"
@@ -210,7 +210,7 @@ export default function EditProfilePage() {
                     />
                   </div>
                 ) : (
-                  <div className="w-24 h-24 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center bg-gray-50 text-gray-400">
+                  <div className="w-24 h-24 rounded-lg border border-dashed border-line flex items-center justify-center bg-surface-2 text-ink-muted">
                     📷
                   </div>
                 )}
@@ -219,16 +219,16 @@ export default function EditProfilePage() {
                     type="file"
                     accept="image/*"
                     onChange={handleImageChange}
-                    className="block text-sm text-gray-600 file:mr-4 file:px-4 file:py-2 file:rounded-lg file:border-0 file:bg-amber-600 file:text-white file:cursor-pointer hover:file:bg-amber-700"
+                    className="block text-sm text-ink-muted file:mr-4 file:px-4 file:py-2 file:rounded-lg file:border-0 file:bg-flash file:text-[#17140f] file:font-bold file:cursor-pointer hover:file:bg-flash-dark"
                   />
-                  <p className="text-xs text-gray-700 mt-1">Max 5MB • JPG, PNG, GIF</p>
+                  <p className="text-xs text-ink-muted mt-1">Max 5MB • JPG, PNG, GIF</p>
                 </div>
               </div>
             </div>
 
             {/* Shop Name */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-xs uppercase tracking-wide text-ink-muted mb-1">
                 Shop Name *
               </label>
               <input
@@ -237,22 +237,22 @@ export default function EditProfilePage() {
                 value={formData.shop_name}
                 onChange={handleChange}
                 required
-                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent ${
-                  validationErrors.shop_name ? 'border-red-500' : 'border-gray-300'
+                className={`w-full px-4 py-2 bg-surface-2 border rounded-lg text-sm text-ink focus:outline-none focus:border-flash ${
+                  validationErrors.shop_name ? 'border-flash' : 'border-line'
                 }`}
               />
               {validationErrors.shop_name && (
-                <p className="text-red-500 text-xs mt-1">{validationErrors.shop_name}</p>
+                <p className="text-flash text-xs mt-1">{validationErrors.shop_name}</p>
               )}
             </div>
 
             {/* Instagram Handle */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-xs uppercase tracking-wide text-ink-muted mb-1">
                 Instagram Handle *
               </label>
               <div className="flex">
-                <span className="inline-flex items-center px-3 bg-gray-100 text-gray-600 border border-r-0 border-gray-300 rounded-l-lg">
+                <span className="inline-flex items-center px-3 bg-surface-2 text-ink-muted border border-r-0 border-line rounded-l-lg font-mono text-sm">
                   @
                 </span>
                 <input
@@ -261,26 +261,26 @@ export default function EditProfilePage() {
                   value={formData.instagram_handle}
                   onChange={handleChange}
                   required
-                  className={`w-full px-4 py-2 border rounded-r-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent ${
-                    validationErrors.instagram_handle ? 'border-red-500' : 'border-gray-300'
+                  className={`w-full px-4 py-2 bg-surface-2 border rounded-r-lg text-sm text-ink font-mono focus:outline-none focus:border-flash ${
+                    validationErrors.instagram_handle ? 'border-flash' : 'border-line'
                   }`}
                 />
               </div>
               {validationErrors.instagram_handle && (
-                <p className="text-red-500 text-xs mt-1">{validationErrors.instagram_handle}</p>
+                <p className="text-flash text-xs mt-1">{validationErrors.instagram_handle}</p>
               )}
             </div>
 
             {/* Description */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-xs uppercase tracking-wide text-ink-muted mb-1">
                 Description
               </label>
               <textarea
                 name="description"
                 value={formData.description}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                className="w-full px-4 py-2 bg-surface-2 border border-line rounded-lg text-sm text-ink focus:outline-none focus:border-flash"
                 rows={4}
               />
             </div>
@@ -289,13 +289,13 @@ export default function EditProfilePage() {
               <button
                 type="submit"
                 disabled={saving}
-                className="flex-1 bg-amber-600 hover:bg-amber-700 disabled:bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+                className="flex-1 bg-flash hover:bg-flash-dark disabled:opacity-50 text-[#17140f] font-bold text-sm uppercase tracking-wide py-3 rounded-lg transition-colors"
               >
-                {saving ? 'Saving...' : 'Save Changes'}
+                {saving ? 'Saving...' : 'Save changes'}
               </button>
               <Link
                 href="/vendor/dashboard"
-                className="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-900 font-semibold py-2 px-4 rounded-lg text-center transition-colors"
+                className="flex-1 border border-line hover:border-ink-muted text-ink font-bold text-sm uppercase tracking-wide py-3 rounded-lg text-center transition-colors"
               >
                 Cancel
               </Link>

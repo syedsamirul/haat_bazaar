@@ -21,62 +21,48 @@ export default function SearchBar({ onFiltersChange }: SearchBarProps) {
   }
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md mb-8">
-      <div className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Search
+    <div className="bg-surface border border-line rounded-lg p-4 mb-6">
+      <div className="space-y-3">
+        <input
+          type="text"
+          placeholder="Search shops, products..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full px-3 py-2 bg-surface-2 border border-line rounded-lg text-sm text-ink placeholder:text-ink-muted focus:outline-none focus:border-flash"
+        />
+
+        <div className="flex gap-3 flex-wrap items-center">
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className="px-3 py-2 bg-surface-2 border border-line rounded-lg text-sm text-ink focus:outline-none focus:border-flash"
+          >
+            <option value="">All categories</option>
+            <option value="clothing">Clothing</option>
+            <option value="accessories">Accessories</option>
+            <option value="beauty">Beauty</option>
+            <option value="crafts">Crafts</option>
+            <option value="food">Food</option>
+            <option value="other">Other</option>
+          </select>
+
+          <label className="flex items-center gap-2 cursor-pointer text-sm text-ink-muted">
+            <input
+              type="checkbox"
+              checked={verifiedOnly}
+              onChange={(e) => setVerifiedOnly(e.target.checked)}
+              className="w-4 h-4 accent-flash"
+            />
+            Verified only
           </label>
-          <input
-            type="text"
-            placeholder="Search by vendor name or description..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
-          />
+
+          <button
+            onClick={handleSearch}
+            className="ml-auto bg-flash hover:bg-flash-dark text-[#17140f] font-bold text-xs uppercase tracking-wide px-4 py-2 rounded-lg transition-colors"
+          >
+            Search
+          </button>
         </div>
-
-        <div className="grid md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Category
-            </label>
-            <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
-            >
-              <option value="">All Categories</option>
-              <option value="clothing">Clothing</option>
-              <option value="accessories">Accessories</option>
-              <option value="beauty">Beauty</option>
-              <option value="crafts">Crafts</option>
-              <option value="food">Food</option>
-              <option value="other">Other</option>
-            </select>
-          </div>
-
-          <div className="flex items-end">
-            <label className="flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                checked={verifiedOnly}
-                onChange={(e) => setVerifiedOnly(e.target.checked)}
-                className="w-4 h-4 text-amber-600 rounded focus:ring-2 focus:ring-amber-500"
-              />
-              <span className="ml-2 text-sm text-gray-700">
-                Verified vendors only
-              </span>
-            </label>
-          </div>
-        </div>
-
-        <button
-          onClick={handleSearch}
-          className="w-full bg-amber-600 hover:bg-amber-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
-        >
-          Search
-        </button>
       </div>
     </div>
   )

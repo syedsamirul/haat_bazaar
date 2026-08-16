@@ -2,44 +2,54 @@ import Link from 'next/link'
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-gradient-to-b from-amber-50 to-orange-50">
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold text-amber-900 mb-4">
-            Haat Bazaar
-          </h1>
-          <p className="text-xl text-amber-700 mb-8">
-            Discover authentic products from Instagram-based small businesses
-          </p>
+    <main className="min-h-screen bg-canvas text-ink flex flex-col">
+      <nav className="flex justify-between items-center px-5 py-4 border-b border-line">
+        <span className="font-bold text-sm tracking-widest uppercase">
+          Haat Bazaar
+        </span>
+        <div className="flex gap-5 text-xs text-ink-muted">
+          <Link href="/vendors" className="hover:text-ink transition-colors">
+            Browse
+          </Link>
+          <Link href="/auth/signup" className="hover:text-ink transition-colors">
+            Sell
+          </Link>
         </div>
+      </nav>
 
-        {/* Quick Links */}
-        <div className="grid md:grid-cols-2 gap-8 max-w-2xl mx-auto">
+      <div className="flex-1 flex flex-col justify-center px-5 py-16 max-w-md mx-auto w-full text-center">
+        <p className="font-mono text-xs text-flash mb-4 tracking-wide">
+          142 vendors · updated daily
+        </p>
+        <h1 className="text-3xl font-bold uppercase tracking-tight leading-tight mb-4 text-balance">
+          Your favorite Insta shops, all in one haat.
+        </h1>
+        <p className="text-sm text-ink-muted mb-10 leading-relaxed">
+          Browse Instagram-based small businesses from across Bangladesh — search,
+          filter, and jump straight to their page to order.
+        </p>
+
+        <div className="flex flex-col gap-3">
           <Link
             href="/vendors"
-            className="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition-shadow text-center"
+            className="bg-flash hover:bg-flash-dark text-[#17140f] font-bold text-sm uppercase tracking-wide py-3 rounded-lg transition-colors"
           >
-            <h2 className="text-2xl font-bold text-amber-900 mb-2">
-              Browse Vendors
-            </h2>
-            <p className="text-gray-600">
-              Find and follow sellers on Instagram
-            </p>
+            Browse vendors
           </Link>
-
           <Link
             href="/auth/signup"
-            className="bg-amber-100 p-8 rounded-lg shadow-md hover:shadow-lg transition-shadow text-center"
+            className="border border-line hover:border-ink-muted text-ink font-bold text-sm uppercase tracking-wide py-3 rounded-lg transition-colors"
           >
-            <h2 className="text-2xl font-bold text-amber-900 mb-2">
-              Sell on Haat Bazaar
-            </h2>
-            <p className="text-gray-600">
-              Register your Instagram shop
-            </p>
+            Sell on Haat Bazaar
           </Link>
         </div>
+      </div>
+
+      {/* Preview grid strip */}
+      <div className="grid grid-cols-4 gap-0.5 mt-auto">
+        {['#7A1F2B', '#9C7A2E', '#C98A1E', '#2E5C63'].map((color) => (
+          <div key={color} className="aspect-square" style={{ backgroundColor: color }} />
+        ))}
       </div>
     </main>
   )

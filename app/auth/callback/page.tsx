@@ -48,38 +48,38 @@ export default function AuthCallbackPage() {
   }, [router])
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-amber-50 to-orange-50 flex items-center justify-center px-4">
-      <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md text-center">
+    <div className="min-h-screen bg-canvas text-ink flex items-center justify-center px-4">
+      <div className="bg-surface border border-line rounded-lg p-8 w-full max-w-md text-center">
         {status === 'checking' && (
           <>
             <div className="mb-4 text-5xl">⏳</div>
-            <h1 className="text-2xl font-bold text-amber-900 mb-2">Verifying...</h1>
-            <p className="text-gray-700">Confirming your email, one moment.</p>
+            <h1 className="font-bold text-lg uppercase tracking-tight mb-2">Verifying...</h1>
+            <p className="text-sm text-ink-muted">Confirming your email, one moment.</p>
           </>
         )}
 
         {status === 'success' && (
           <>
             <div className="mb-4 text-5xl">✓</div>
-            <h1 className="text-2xl font-bold text-green-600 mb-2">Email Verified!</h1>
-            <p className="text-gray-700">Redirecting to your dashboard...</p>
+            <h1 className="font-bold text-lg uppercase tracking-tight text-flash mb-2">Email verified</h1>
+            <p className="text-sm text-ink-muted">Redirecting to your dashboard...</p>
           </>
         )}
 
         {status === 'error' && (
           <>
             <div className="mb-4 text-5xl">⚠️</div>
-            <h1 className="text-2xl font-bold text-red-600 mb-2">
+            <h1 className="font-bold text-lg uppercase tracking-tight mb-2">
               Verification link invalid or expired
             </h1>
-            <p className="text-gray-700 mb-6">
+            <p className="text-sm text-ink-muted mb-6">
               Please try logging in, or request a new confirmation email.
             </p>
             <Link
               href="/auth/login"
-              className="inline-block bg-amber-600 hover:bg-amber-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors"
+              className="inline-block bg-flash hover:bg-flash-dark text-[#17140f] font-bold text-sm uppercase tracking-wide py-2 px-6 rounded-lg transition-colors"
             >
-              Go to Login
+              Go to login
             </Link>
           </>
         )}

@@ -167,30 +167,27 @@ export default function SignupPage() {
 
   if (success && needsVerification) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-amber-50 to-orange-50 flex items-center justify-center px-4">
-        <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md text-center">
+      <div className="min-h-screen bg-canvas text-ink flex items-center justify-center px-4">
+        <div className="bg-surface border border-line rounded-lg p-8 w-full max-w-md text-center">
           <div className="mb-4 text-5xl">📧</div>
-          <h1 className="text-3xl font-bold text-amber-900 mb-2">Check your email</h1>
-          <p className="text-gray-700 mb-4">
-            We've sent a confirmation link to <span className="font-semibold">{formData.email}</span>.
+          <h1 className="font-bold text-xl uppercase tracking-tight mb-2">Check your email</h1>
+          <p className="text-sm text-ink-muted mb-4">
+            We've sent a confirmation link to <span className="text-ink font-medium">{formData.email}</span>.
             Click the link to verify your account and access your dashboard.
           </p>
-          <p className="text-sm text-gray-500 mb-6">
+          <p className="text-xs text-ink-muted mb-6">
             Didn't get it? Check your spam folder, or{' '}
             <button
               onClick={async () => {
                 await supabase.auth.resend({ type: 'signup', email: formData.email })
               }}
-              className="text-amber-600 hover:text-amber-700 font-semibold underline"
+              className="text-flash font-bold underline"
             >
               resend the email
             </button>
             .
           </p>
-          <Link
-            href="/auth/login"
-            className="inline-block text-amber-600 hover:text-amber-700 font-semibold"
-          >
+          <Link href="/auth/login" className="inline-block text-flash text-sm font-bold">
             ← Back to login
           </Link>
         </div>
@@ -200,14 +197,14 @@ export default function SignupPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-amber-50 to-orange-50 flex items-center justify-center px-4">
-        <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md text-center">
+      <div className="min-h-screen bg-canvas text-ink flex items-center justify-center px-4">
+        <div className="bg-surface border border-line rounded-lg p-8 w-full max-w-md text-center">
           <div className="mb-4 text-5xl">✓</div>
-          <h1 className="text-3xl font-bold text-green-600 mb-2">Account Created!</h1>
-          <p className="text-gray-600 mb-4">
+          <h1 className="font-bold text-xl uppercase tracking-tight text-flash mb-2">Account created</h1>
+          <p className="text-sm text-ink-muted mb-4">
             Welcome to Haat Bazaar. Your account has been successfully created.
           </p>
-          <p className="text-sm text-gray-500">
+          <p className="text-xs text-ink-muted">
             Redirecting to your dashboard...
           </p>
         </div>
@@ -216,30 +213,30 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-amber-50 to-orange-50 flex items-center justify-center px-4 py-8">
-      <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
-        <h1 className="text-3xl font-bold text-amber-900 mb-2 text-center">
+    <div className="min-h-screen bg-canvas text-ink flex items-center justify-center px-4 py-8">
+      <div className="bg-surface border border-line rounded-lg p-8 w-full max-w-md">
+        <h1 className="font-bold text-xl uppercase tracking-widest text-center mb-2">
           Haat Bazaar
         </h1>
-        <p className="text-center text-gray-700 mb-8">
+        <p className="text-center text-sm text-ink-muted mb-8">
           Register your Instagram shop
         </p>
 
         <form onSubmit={handleSignup} className="space-y-4">
           {error && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded text-sm">
+            <div className="bg-surface-2 border border-flash/40 text-flash px-4 py-3 rounded-lg text-sm">
               {error}
             </div>
           )}
 
           {/* Profile Picture Upload */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Profile Picture
+            <label className="block text-xs uppercase tracking-wide text-ink-muted mb-2">
+              Profile picture
             </label>
             <div className="flex flex-col items-center gap-4">
               {previewUrl ? (
-                <div className="w-24 h-24 rounded-lg overflow-hidden border-2 border-amber-300">
+                <div className="w-24 h-24 rounded-lg overflow-hidden border border-flash">
                   <img
                     src={previewUrl}
                     alt="Profile preview"
@@ -247,7 +244,7 @@ export default function SignupPage() {
                   />
                 </div>
               ) : (
-                <div className="w-24 h-24 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center bg-gray-50 text-gray-400">
+                <div className="w-24 h-24 rounded-lg border border-dashed border-line flex items-center justify-center bg-surface-2 text-ink-muted">
                   📷
                 </div>
               )}
@@ -255,15 +252,15 @@ export default function SignupPage() {
                 type="file"
                 accept="image/*"
                 onChange={handleImageChange}
-                className="block text-sm text-gray-600 file:mr-4 file:px-4 file:py-2 file:rounded-lg file:border-0 file:bg-amber-600 file:text-white file:cursor-pointer hover:file:bg-amber-700"
+                className="block text-sm text-ink-muted file:mr-4 file:px-4 file:py-2 file:rounded-lg file:border-0 file:bg-flash file:text-[#17140f] file:font-bold file:cursor-pointer hover:file:bg-flash-dark"
               />
-              <p className="text-xs text-gray-700">Max 5MB • JPG, PNG, GIF</p>
+              <p className="text-xs text-ink-muted">Max 5MB • JPG, PNG, GIF</p>
             </div>
           </div>
 
           {/* Email */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-xs uppercase tracking-wide text-ink-muted mb-1">
               Email *
             </label>
             <input
@@ -272,19 +269,19 @@ export default function SignupPage() {
               value={formData.email}
               onChange={handleChange}
               required
-              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent ${
-                validationErrors.email ? 'border-red-500' : 'border-gray-300'
+              className={`w-full px-4 py-2 bg-surface-2 border rounded-lg text-sm text-ink focus:outline-none focus:border-flash ${
+                validationErrors.email ? 'border-flash' : 'border-line'
               }`}
               placeholder="your@email.com"
             />
             {validationErrors.email && (
-              <p className="text-red-500 text-xs mt-1">{validationErrors.email}</p>
+              <p className="text-flash text-xs mt-1">{validationErrors.email}</p>
             )}
           </div>
 
           {/* Password */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-xs uppercase tracking-wide text-ink-muted mb-1">
               Password (min 8 characters) *
             </label>
             <input
@@ -293,19 +290,19 @@ export default function SignupPage() {
               value={formData.password}
               onChange={handleChange}
               required
-              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent ${
-                validationErrors.password ? 'border-red-500' : 'border-gray-300'
+              className={`w-full px-4 py-2 bg-surface-2 border rounded-lg text-sm text-ink focus:outline-none focus:border-flash ${
+                validationErrors.password ? 'border-flash' : 'border-line'
               }`}
               placeholder="••••••••"
             />
             {validationErrors.password && (
-              <p className="text-red-500 text-xs mt-1">{validationErrors.password}</p>
+              <p className="text-flash text-xs mt-1">{validationErrors.password}</p>
             )}
           </div>
 
           {/* Confirm Password */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-xs uppercase tracking-wide text-ink-muted mb-1">
               Confirm Password *
             </label>
             <input
@@ -314,19 +311,19 @@ export default function SignupPage() {
               value={formData.confirmPassword}
               onChange={handleChange}
               required
-              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent ${
-                validationErrors.confirmPassword ? 'border-red-500' : 'border-gray-300'
+              className={`w-full px-4 py-2 bg-surface-2 border rounded-lg text-sm text-ink focus:outline-none focus:border-flash ${
+                validationErrors.confirmPassword ? 'border-flash' : 'border-line'
               }`}
               placeholder="••••••••"
             />
             {validationErrors.confirmPassword && (
-              <p className="text-red-500 text-xs mt-1">{validationErrors.confirmPassword}</p>
+              <p className="text-flash text-xs mt-1">{validationErrors.confirmPassword}</p>
             )}
           </div>
 
           {/* Shop Name */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-xs uppercase tracking-wide text-ink-muted mb-1">
               Shop Name *
             </label>
             <input
@@ -335,23 +332,23 @@ export default function SignupPage() {
               value={formData.shop_name}
               onChange={handleChange}
               required
-              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent ${
-                validationErrors.shop_name ? 'border-red-500' : 'border-gray-300'
+              className={`w-full px-4 py-2 bg-surface-2 border rounded-lg text-sm text-ink focus:outline-none focus:border-flash ${
+                validationErrors.shop_name ? 'border-flash' : 'border-line'
               }`}
               placeholder="My Awesome Shop"
             />
             {validationErrors.shop_name && (
-              <p className="text-red-500 text-xs mt-1">{validationErrors.shop_name}</p>
+              <p className="text-flash text-xs mt-1">{validationErrors.shop_name}</p>
             )}
           </div>
 
           {/* Instagram Handle */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-xs uppercase tracking-wide text-ink-muted mb-1">
               Instagram Handle *
             </label>
             <div className="flex">
-              <span className="inline-flex items-center px-3 bg-gray-100 text-gray-600 border border-r-0 border-gray-300 rounded-l-lg">
+              <span className="inline-flex items-center px-3 bg-surface-2 text-ink-muted border border-r-0 border-line rounded-l-lg font-mono text-sm">
                 @
               </span>
               <input
@@ -360,27 +357,27 @@ export default function SignupPage() {
                 value={formData.instagram_handle}
                 onChange={handleChange}
                 required
-                className={`w-full px-4 py-2 border rounded-r-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent ${
-                  validationErrors.instagram_handle ? 'border-red-500' : 'border-gray-300'
+                className={`w-full px-4 py-2 bg-surface-2 border rounded-r-lg text-sm text-ink font-mono focus:outline-none focus:border-flash ${
+                  validationErrors.instagram_handle ? 'border-flash' : 'border-line'
                 }`}
                 placeholder="myshop"
               />
             </div>
             {validationErrors.instagram_handle && (
-              <p className="text-red-500 text-xs mt-1">{validationErrors.instagram_handle}</p>
+              <p className="text-flash text-xs mt-1">{validationErrors.instagram_handle}</p>
             )}
           </div>
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-xs uppercase tracking-wide text-ink-muted mb-1">
               Description
             </label>
             <textarea
               name="description"
               value={formData.description}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+              className="w-full px-4 py-2 bg-surface-2 border border-line rounded-lg text-sm text-ink focus:outline-none focus:border-flash"
               placeholder="Tell customers about your shop..."
               rows={3}
             />
@@ -389,15 +386,15 @@ export default function SignupPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-amber-600 hover:bg-amber-700 disabled:bg-gray-400 text-white font-semibold py-3 px-4 rounded-lg transition-colors"
+            className="w-full bg-flash hover:bg-flash-dark disabled:opacity-50 text-[#17140f] font-bold text-sm uppercase tracking-wide py-3 rounded-lg transition-colors"
           >
-            {loading ? 'Creating your shop...' : 'Create Shop Account'}
+            {loading ? 'Creating your shop...' : 'Create shop account'}
           </button>
         </form>
 
-        <p className="text-center text-gray-700 text-sm mt-6">
+        <p className="text-center text-sm text-ink-muted mt-6">
           Already have an account?{' '}
-          <Link href="/auth/login" className="text-amber-600 hover:text-amber-700 font-semibold">
+          <Link href="/auth/login" className="text-flash font-bold">
             Login
           </Link>
         </p>

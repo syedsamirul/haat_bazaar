@@ -80,43 +80,43 @@ export default function VendorDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <p className="text-gray-600">Loading...</p>
+      <div className="min-h-screen bg-canvas text-ink flex items-center justify-center">
+        <p className="text-ink-muted text-sm">Loading...</p>
       </div>
     )
   }
 
   if (!vendor) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <p className="text-gray-600">Vendor not found</p>
+      <div className="min-h-screen bg-canvas text-ink flex items-center justify-center">
+        <p className="text-ink-muted text-sm">Vendor not found</p>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-canvas text-ink">
       {/* Header */}
-      <div className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-          <Link href="/" className="text-2xl font-bold text-amber-900">
+      <div className="border-b border-line">
+        <div className="max-w-5xl mx-auto px-5 py-4 flex justify-between items-center">
+          <Link href="/" className="font-bold text-sm tracking-widest uppercase">
             Haat Bazaar
           </Link>
           <button
             onClick={handleLogout}
-            className="text-sm text-gray-600 hover:text-gray-900 font-medium"
+            className="text-xs text-ink-muted hover:text-ink transition-colors"
           >
             Logout
           </button>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="max-w-5xl mx-auto px-5 py-8">
         {/* Vendor Info */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <div className="flex justify-between items-start gap-6">
-            <div className="flex gap-6">
-              <div className="w-24 h-24 flex-shrink-0 rounded-lg overflow-hidden bg-gray-200 border border-gray-200">
+        <div className="bg-surface border border-line rounded-lg p-6 mb-8">
+          <div className="flex justify-between items-start gap-6 flex-wrap">
+            <div className="flex gap-5">
+              <div className="w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-surface-2 border border-line">
                 {vendor.profile_image_url ? (
                   <img
                     src={vendor.profile_image_url}
@@ -124,58 +124,58 @@ export default function VendorDashboard() {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-gray-400 text-3xl">
+                  <div className="w-full h-full flex items-center justify-center text-ink-muted text-2xl">
                     📷
                   </div>
                 )}
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                <h1 className="font-bold text-xl uppercase tracking-tight mb-1">
                   {vendor.shop_name}
                 </h1>
-                <p className="text-gray-600 mb-2">@{vendor.instagram_handle}</p>
-                <p className="text-gray-600">{vendor.description}</p>
+                <p className="font-mono text-xs text-ink-muted mb-2">@{vendor.instagram_handle}</p>
+                <p className="text-sm text-ink-muted">{vendor.description}</p>
               </div>
             </div>
             <Link
               href={`/vendor/dashboard/edit`}
-              className="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg whitespace-nowrap"
+              className="border border-line hover:border-ink-muted text-ink text-xs font-bold uppercase tracking-wide px-4 py-2 rounded-lg whitespace-nowrap transition-colors"
             >
-              Edit Profile
+              Edit profile
             </Link>
           </div>
         </div>
 
         {/* Products Section */}
         <div>
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">Your Products</h2>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="font-bold text-sm uppercase tracking-wide text-ink-muted">Your products</h2>
             <Link
               href="/vendor/dashboard/products/new"
-              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg"
+              className="bg-flash hover:bg-flash-dark text-[#17140f] text-xs font-bold uppercase tracking-wide px-4 py-2 rounded-lg transition-colors"
             >
-              Add Product
+              Add product
             </Link>
           </div>
 
           {products.length === 0 ? (
-            <div className="bg-white rounded-lg shadow-md p-12 text-center">
-              <p className="text-gray-600 mb-4">No products yet</p>
+            <div className="border border-line rounded-lg p-12 text-center">
+              <p className="text-ink-muted text-sm mb-4">No products yet</p>
               <Link
                 href="/vendor/dashboard/products/new"
-                className="inline-block bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg"
+                className="inline-block bg-flash hover:bg-flash-dark text-[#17140f] text-xs font-bold uppercase tracking-wide px-6 py-2.5 rounded-lg transition-colors"
               >
-                Add Your First Product
+                Add your first product
               </Link>
             </div>
           ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {products.map((product) => (
                 <div
                   key={product.id}
-                  className="bg-white rounded-lg shadow-md overflow-hidden"
+                  className="bg-surface border border-line rounded-lg overflow-hidden"
                 >
-                  <div className="aspect-square bg-gray-200">
+                  <div className="aspect-square bg-surface-2">
                     {product.image_url && (
                       <img
                         src={product.image_url}
@@ -184,23 +184,23 @@ export default function VendorDashboard() {
                       />
                     )}
                   </div>
-                  <div className="p-4">
-                    <h3 className="font-bold text-lg text-gray-900 mb-1">
+                  <div className="p-3">
+                    <h3 className="font-medium text-sm text-ink mb-1 truncate">
                       {product.name}
                     </h3>
-                    <p className="text-2xl font-bold text-amber-600 mb-3">
+                    <p className="font-mono text-sm text-flash mb-3">
                       ৳{product.price}
                     </p>
                     <div className="flex gap-2">
                       <Link
                         href={`/vendor/dashboard/products/${product.id}/edit`}
-                        className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded text-center text-sm"
+                        className="flex-1 border border-line hover:border-ink-muted text-ink px-3 py-1.5 rounded-lg text-center text-xs font-bold uppercase transition-colors"
                       >
                         Edit
                       </Link>
                       <button
                         onClick={() => handleDeleteProduct(product.id)}
-                        className="flex-1 bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded text-sm"
+                        className="flex-1 border border-flash/40 hover:border-flash text-flash px-3 py-1.5 rounded-lg text-xs font-bold uppercase transition-colors"
                       >
                         Delete
                       </button>

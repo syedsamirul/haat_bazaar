@@ -20,7 +20,6 @@ export default function VendorDetailPage() {
 
   const fetchVendorAndProducts = async () => {
     try {
-      // Fetch vendor
       const { data: vendorData, error: vendorError } = await supabase
         .from('vendors')
         .select('*')
@@ -31,7 +30,6 @@ export default function VendorDetailPage() {
 
       setVendor(vendorData)
 
-      // Fetch products
       const { data: productsData } = await supabase
         .from('products')
         .select('*')
@@ -49,18 +47,18 @@ export default function VendorDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <p className="text-gray-600">Loading...</p>
+      <div className="min-h-screen bg-canvas text-ink flex items-center justify-center">
+        <p className="text-ink-muted text-sm">Loading...</p>
       </div>
     )
   }
 
   if (!vendor) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-canvas text-ink flex items-center justify-center">
         <div className="text-center">
-          <p className="text-gray-600 mb-4">Vendor not found</p>
-          <Link href="/vendors" className="text-amber-600 hover:text-amber-700 font-semibold">
+          <p className="text-ink-muted text-sm mb-4">Vendor not found</p>
+          <Link href="/vendors" className="text-flash text-sm font-bold">
             ← Back to vendors
           </Link>
         </div>
@@ -71,132 +69,105 @@ export default function VendorDetailPage() {
   const instagramUrl = `https://instagram.com/${vendor.instagram_handle}`
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white shadow-sm mb-8">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <Link href="/vendors" className="text-amber-600 hover:text-amber-700 font-semibold">
-            ← Back to vendors
-          </Link>
-        </div>
-      </div>
+    <div className="min-h-screen bg-canvas text-ink">
+      <nav className="flex justify-between items-center px-5 py-4 border-b border-line max-w-3xl mx-auto">
+        <Link href="/vendors" className="text-xs text-ink-muted hover:text-ink transition-colors">
+          ← Back to vendors
+        </Link>
+      </nav>
 
-      <div className="max-w-7xl mx-auto px-4 pb-12">
-        {/* Vendor Header */}
-        <div className="bg-white rounded-lg shadow-md p-8 mb-8">
-          <div className="flex gap-8">
-            {vendor.profile_image_url && (
-              <div className="w-32 h-32 flex-shrink-0">
-                <img
-                  src={vendor.profile_image_url}
-                  alt={vendor.shop_name}
-                  className="w-full h-full object-cover rounded-lg"
-                />
-              </div>
-            )}
-            <div className="flex-1">
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <h1 className="text-4xl font-bold text-gray-900">
-                    {vendor.shop_name}
-                  </h1>
-                  <p className="text-lg text-gray-600">@{vendor.instagram_handle}</p>
-                </div>
-                {vendor.verified && (
-                  <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full font-semibold">
-                    ✓ Verified
-                  </span>
+      <div className="max-w-3xl mx-auto px-5 py-8">
+        {/* Vendor header with story-ring avatar */}
+        <div className="flex items-center gap-4 mb-6">
+          <div className="w-20 h-20 rounded-full p-[3px] flex-shrink-0" style={{ background: 'conic-gradient(#FF5A1F, #FFB199, #FF5A1F)' }}>
+            <div className="w-full h-full rounded-full bg-canvas p-[3px]">
+              <div className="w-full h-full rounded-full overflow-hidden bg-surface-2">
+                {vendor.profile_image_url && (
+                  <img
+                    src={vendor.profile_image_url}
+                    alt={vendor.shop_name}
+                    className="w-full h-full object-cover"
+                  />
                 )}
-              </div>
-
-              <p className="text-gray-700 mb-6">{vendor.description}</p>
-
-              <div className="flex flex-wrap gap-4">
-                <a
-                  href={instagramUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 hover:opacity-90 text-white font-semibold py-2 px-6 rounded-lg transition-opacity"
-                >
-                  Visit on Instagram
-                </a>
-                <a
-                  href={`https://wa.me/${vendor.instagram_handle}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors"
-                >
-                  Message on WhatsApp
-                </a>
               </div>
             </div>
           </div>
+          <div className="min-w-0">
+            <div className="flex items-center gap-2">
+              <h1 className="font-bold text-lg uppercase tracking-tight truncate">
+                {vendor.shop_name}
+              </h1>
+              {vendor.verified && <span className="text-flash text-sm flex-shrink-0">✓</span>}
+            </div>
+            <p className="font-mono text-xs text-ink-muted">@{vendor.instagram_handle}</p>
+            <p className="font-mono text-[11px] text-ink-muted mt-0.5">
+              {vendor.follower_count.toLocaleString()} followers
+            </p>
+          </div>
         </div>
 
-        {/* Products Section */}
+        <p className="text-sm text-ink-muted leading-relaxed mb-6">{vendor.description}</p>
+
+        <div className="flex gap-3 mb-8">
+          <a
+            href={instagramUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex-1 bg-flash hover:bg-flash-dark text-[#17140f] font-bold text-xs uppercase tracking-wide py-3 rounded-lg text-center transition-colors"
+          >
+            Visit on Instagram
+          </a>
+          <a
+            href={`https://wa.me/${vendor.instagram_handle}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex-1 border border-line hover:border-ink-muted text-ink font-bold text-xs uppercase tracking-wide py-3 rounded-lg text-center transition-colors"
+          >
+            WhatsApp
+          </a>
+        </div>
+
+        {/* Product grid */}
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">
-            Products ({products.length})
-          </h2>
+          <p className="font-mono text-xs text-ink-muted uppercase tracking-wide mb-3">
+            {products.length} products
+          </p>
 
           {products.length === 0 ? (
-            <div className="bg-white rounded-lg shadow-md p-12 text-center">
-              <p className="text-gray-600">No products available yet</p>
+            <div className="border border-line rounded-lg p-12 text-center">
+              <p className="text-ink-muted text-sm">No products available yet</p>
             </div>
           ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 gap-2">
               {products.map((product) => (
-                <div
+                <a
                   key={product.id}
-                  className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
+                  href={instagramUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group block"
                 >
-                  <div className="aspect-square bg-gray-200 relative group">
+                  <div className="aspect-square bg-surface-2 rounded-lg overflow-hidden mb-2 relative">
                     {product.image_url ? (
-                      <>
-                        <img
-                          src={product.image_url}
-                          alt={product.name}
-                          className="w-full h-full object-cover"
-                        />
-                        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
-                          <a
-                            href={instagramUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="bg-white text-gray-900 px-4 py-2 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
-                          >
-                            View on Instagram
-                          </a>
-                        </div>
-                      </>
+                      <img
+                        src={product.image_url}
+                        alt={product.name}
+                        className="w-full h-full object-cover"
+                      />
                     ) : (
-                      <div className="flex items-center justify-center h-full text-gray-400">
+                      <div className="flex items-center justify-center h-full text-ink-muted text-xs">
                         No image
                       </div>
                     )}
+                    <div className="absolute inset-0 bg-canvas/0 group-hover:bg-canvas/40 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                      <span className="text-xs font-bold uppercase tracking-wide text-ink">
+                        View on Instagram
+                      </span>
+                    </div>
                   </div>
-                  <div className="p-4">
-                    <h3 className="font-bold text-lg text-gray-900 mb-2">
-                      {product.name}
-                    </h3>
-                    {product.description && (
-                      <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-                        {product.description}
-                      </p>
-                    )}
-                    <p className="text-2xl font-bold text-amber-600 mb-4">
-                      ৳{product.price.toFixed(2)}
-                    </p>
-                    <a
-                      href={instagramUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block w-full bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 hover:opacity-90 text-white font-semibold py-2 px-4 rounded-lg text-center transition-opacity"
-                    >
-                      Order on Instagram
-                    </a>
-                  </div>
-                </div>
+                  <p className="text-xs font-medium text-ink truncate">{product.name}</p>
+                  <p className="font-mono text-xs text-flash">৳{product.price.toFixed(2)}</p>
+                </a>
               ))}
             </div>
           )}
