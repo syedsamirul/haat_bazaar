@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { Vendor, Product } from '@/lib/types'
 import Link from 'next/link'
+import Logo from '@/components/Logo'
 
 export default function VendorDashboard() {
   const router = useRouter()
@@ -99,9 +100,7 @@ export default function VendorDashboard() {
       {/* Header */}
       <div className="border-b border-line">
         <div className="max-w-5xl mx-auto px-5 py-4 flex justify-between items-center">
-          <Link href="/" className="font-bold text-sm tracking-widest uppercase">
-            Haat Bazaar
-          </Link>
+          <Link href="/"><Logo className="text-sm" /></Link>
           <button
             onClick={handleLogout}
             className="text-xs text-ink-muted hover:text-ink transition-colors"

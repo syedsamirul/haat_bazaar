@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { Vendor } from '@/lib/types'
 import Link from 'next/link'
+import Logo from '@/components/Logo'
 
 export default function AdminDashboard() {
   const router = useRouter()
@@ -159,8 +160,9 @@ export default function AdminDashboard() {
       {/* Header */}
       <div className="border-b border-line">
         <div className="max-w-6xl mx-auto px-5 py-4 flex justify-between items-center">
-          <Link href="/" className="font-bold text-sm tracking-widest uppercase">
-            Haat Bazaar <span className="text-ink-muted font-normal normal-case tracking-normal">Admin</span>
+          <Link href="/" className="flex items-baseline gap-2">
+            <Logo className="text-sm" />
+            <span className="text-ink-muted text-xs">Admin</span>
           </Link>
           <button
             onClick={handleLogout}

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import Link from 'next/link'
+import Logo from '@/components/Logo'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -36,9 +37,9 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-canvas text-ink flex items-center justify-center px-4">
       <div className="bg-surface border border-line rounded-lg p-8 w-full max-w-md">
-        <h1 className="font-bold text-xl uppercase tracking-widest text-center mb-2">
-          Haat Bazaar
-        </h1>
+        <div className="text-center mb-2">
+          <Logo className="text-xl" />
+        </div>
         <p className="text-center text-sm text-ink-muted mb-8">
           Vendor login
         </p>

@@ -1,12 +1,11 @@
 import Link from 'next/link'
+import Logo from '@/components/Logo'
 
 export default function Home() {
   return (
     <main className="min-h-screen bg-canvas text-ink flex flex-col">
       <nav className="flex justify-between items-center px-5 py-4 border-b border-line">
-        <span className="font-bold text-sm tracking-widest uppercase">
-          Haat Bazaar
-        </span>
+        <Logo className="text-sm" />
         <div className="flex gap-5 text-xs text-ink-muted">
           <Link href="/vendors" className="hover:text-ink transition-colors">
             Browse
