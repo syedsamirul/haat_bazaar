@@ -22,6 +22,7 @@ export default function SignupPage() {
     confirmPassword: '',
     shop_name: '',
     instagram_handle: '',
+    whatsapp_number: '',
     description: '',
   })
 
@@ -36,6 +37,11 @@ export default function SignupPage() {
 
   const validateInstagramHandle = (handle: string) => {
     return /^[a-zA-Z0-9_.]{1,30}$/.test(handle)
+  }
+
+  const validateWhatsapp = (number: string) => {
+    if (!number) return true // optional field
+    return /^\+?[0-9]{8,15}$/.test(number.replace(/[\s-]/g, ''))
   }
 
   const validateForm = () => {
@@ -59,6 +65,10 @@ export default function SignupPage() {
 
     if (!validateInstagramHandle(formData.instagram_handle)) {
       errors.instagram_handle = 'Invalid Instagram handle'
+    }
+
+    if (!validateWhatsapp(formData.whatsapp_number)) {
+      errors.whatsapp_number = 'Enter a valid number with country code, e.g. +8801XXXXXXXXX'
     }
 
     setValidationErrors(errors)
@@ -141,6 +151,7 @@ export default function SignupPage() {
       const { error: vendorError } = await supabase.from('vendors').insert({
         id: authData.user.id,
         instagram_handle: formData.instagram_handle.toLowerCase(),
+        whatsapp_number: formData.whatsapp_number.replace(/[\s-]/g, '') || null,
         shop_name: formData.shop_name,
         description: formData.description,
         profile_image_url: profileImageUrl,
@@ -366,6 +377,27 @@ export default function SignupPage() {
             </div>
             {validationErrors.instagram_handle && (
               <p className="text-flash text-xs mt-1">{validationErrors.instagram_handle}</p>
+            )}
+          </div>
+
+          {/* WhatsApp Number */}
+          <div>
+            <label className="block text-xs uppercase tracking-wide text-ink-muted mb-1">
+              WhatsApp number
+            </label>
+            <input
+              type="tel"
+              name="whatsapp_number"
+              value={formData.whatsapp_number}
+              onChange={handleChange}
+              className={`w-full px-4 py-2 bg-surface-2 border rounded-lg text-sm text-ink font-mono focus:outline-none focus:border-flash ${
+                validationErrors.whatsapp_number ? 'border-flash' : 'border-line'
+              }`}
+              placeholder="+8801XXXXXXXXX"
+            />
+            <p className="text-xs text-ink-muted mt-1">Optional, but lets buyers message you directly.</p>
+            {validationErrors.whatsapp_number && (
+              <p className="text-flash text-xs mt-1">{validationErrors.whatsapp_number}</p>
             )}
           </div>
 

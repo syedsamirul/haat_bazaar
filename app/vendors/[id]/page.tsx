@@ -117,14 +117,16 @@ export default function VendorDetailPage() {
           >
             Visit on Instagram
           </a>
-          <a
-            href={`https://wa.me/${vendor.instagram_handle}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex-1 border border-line hover:border-ink-muted text-ink font-bold text-xs uppercase tracking-wide py-3 rounded-lg text-center transition-colors"
-          >
-            WhatsApp
-          </a>
+          {vendor.whatsapp_number && (
+            <a
+              href={`https://wa.me/${vendor.whatsapp_number.replace(/^\+/, '')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 border border-line hover:border-ink-muted text-ink font-bold text-xs uppercase tracking-wide py-3 rounded-lg text-center transition-colors"
+            >
+              WhatsApp
+            </a>
+          )}
         </div>
 
         {/* Product grid */}
