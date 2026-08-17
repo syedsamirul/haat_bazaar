@@ -16,6 +16,7 @@ export default function SignupPage() {
   const [profileImage, setProfileImage] = useState<File | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({})
+  const [showPassword, setShowPassword] = useState(false)
 
   const [formData, setFormData] = useState({
     email: '',
@@ -64,12 +65,18 @@ export default function SignupPage() {
       errors.shop_name = 'Shop name must be at least 2 characters'
     }
 
-    if (!validateInstagramHandle(formData.instagram_handle)) {
+    if (formData.instagram_handle && !validateInstagramHandle(formData.instagram_handle)) {
       errors.instagram_handle = 'Invalid Instagram handle'
     }
 
     if (!validateWhatsapp(formData.whatsapp_number)) {
       errors.whatsapp_number = 'Enter a valid number with country code, e.g. +8801XXXXXXXXX'
+    }
+
+    if (!formData.instagram_handle && !formData.whatsapp_number) {
+      const msg = 'Add at least one so buyers can reach you'
+      errors.instagram_handle = msg
+      errors.whatsapp_number = msg
     }
 
     setValidationErrors(errors)
@@ -100,6 +107,17 @@ export default function SignupPage() {
       }
       reader.readAsDataURL(file)
     }
+  }
+
+  const generatePassword = () => {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#$%'
+    const values = new Uint32Array(14)
+    window.crypto.getRandomValues(values)
+    const pwd = Array.from(values, (n) => chars[n % chars.length]).join('')
+
+    setFormData((prev) => ({ ...prev, password: pwd, confirmPassword: pwd }))
+    setShowPassword(true)
+    setValidationErrors((prev) => ({ ...prev, password: '', confirmPassword: '' }))
   }
 
   const uploadProfileImage = async (userId: string) => {
@@ -151,7 +169,7 @@ export default function SignupPage() {
       // Create vendor profile
       const { error: vendorError } = await supabase.from('vendors').insert({
         id: authData.user.id,
-        instagram_handle: formData.instagram_handle.toLowerCase(),
+        instagram_handle: formData.instagram_handle.toLowerCase() || null,
         whatsapp_number: formData.whatsapp_number.replace(/[\s-]/g, '') || null,
         shop_name: formData.shop_name,
         description: formData.description,
@@ -295,16 +313,25 @@ export default function SignupPage() {
 
           {/* Password */}
           <div>
-            <label className="block text-xs uppercase tracking-wide text-ink-muted mb-1">
-              Password (min 8 characters) *
-            </label>
+            <div className="flex items-center justify-between mb-1">
+              <label className="block text-xs uppercase tracking-wide text-ink-muted">
+                Password (min 8 characters) *
+              </label>
+              <button
+                type="button"
+                onClick={generatePassword}
+                className="text-[11px] font-bold uppercase text-flash"
+              >
+                Generate one
+              </button>
+            </div>
             <input
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               name="password"
               value={formData.password}
               onChange={handleChange}
               required
-              className={`w-full px-4 py-2 bg-surface-2 border rounded-lg text-sm text-ink focus:outline-none focus:border-flash ${
+              className={`w-full px-4 py-2 bg-surface-2 border rounded-lg text-sm text-ink font-mono focus:outline-none focus:border-flash ${
                 validationErrors.password ? 'border-flash' : 'border-line'
               }`}
               placeholder="••••••••"
@@ -316,22 +343,34 @@ export default function SignupPage() {
 
           {/* Confirm Password */}
           <div>
-            <label className="block text-xs uppercase tracking-wide text-ink-muted mb-1">
-              Confirm Password *
-            </label>
+            <div className="flex items-center justify-between mb-1">
+              <label className="block text-xs uppercase tracking-wide text-ink-muted">
+                Confirm Password *
+              </label>
+              <button
+                type="button"
+                onClick={() => setShowPassword((s) => !s)}
+                className="text-[11px] font-bold uppercase text-ink-muted hover:text-ink transition-colors"
+              >
+                {showPassword ? 'Hide' : 'Show'}
+              </button>
+            </div>
             <input
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
               required
-              className={`w-full px-4 py-2 bg-surface-2 border rounded-lg text-sm text-ink focus:outline-none focus:border-flash ${
+              className={`w-full px-4 py-2 bg-surface-2 border rounded-lg text-sm text-ink font-mono focus:outline-none focus:border-flash ${
                 validationErrors.confirmPassword ? 'border-flash' : 'border-line'
               }`}
               placeholder="••••••••"
             />
             {validationErrors.confirmPassword && (
               <p className="text-flash text-xs mt-1">{validationErrors.confirmPassword}</p>
+            )}
+            {showPassword && formData.password && formData.password === formData.confirmPassword && (
+              <p className="text-ink-muted text-xs mt-1">Make sure to save this password before continuing.</p>
             )}
           </div>
 
@@ -359,7 +398,7 @@ export default function SignupPage() {
           {/* Instagram Handle */}
           <div>
             <label className="block text-xs uppercase tracking-wide text-ink-muted mb-1">
-              Instagram Handle *
+              Instagram Handle
             </label>
             <div className="flex">
               <span className="inline-flex items-center px-3 bg-surface-2 text-ink-muted border border-r-0 border-line rounded-l-lg font-mono text-sm">
@@ -370,7 +409,6 @@ export default function SignupPage() {
                 name="instagram_handle"
                 value={formData.instagram_handle}
                 onChange={handleChange}
-                required
                 className={`w-full px-4 py-2 bg-surface-2 border rounded-r-lg text-sm text-ink font-mono focus:outline-none focus:border-flash ${
                   validationErrors.instagram_handle ? 'border-flash' : 'border-line'
                 }`}
@@ -397,7 +435,7 @@ export default function SignupPage() {
               }`}
               placeholder="+8801XXXXXXXXX"
             />
-            <p className="text-xs text-ink-muted mt-1">Optional, but lets buyers message you directly.</p>
+            <p className="text-xs text-ink-muted mt-1">Add Instagram, WhatsApp, or both — at least one is required.</p>
             {validationErrors.whatsapp_number && (
               <p className="text-flash text-xs mt-1">{validationErrors.whatsapp_number}</p>
             )}

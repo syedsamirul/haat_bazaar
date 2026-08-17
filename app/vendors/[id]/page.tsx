@@ -122,7 +122,15 @@ export default function VendorDetailPage() {
     )
   }
 
-  const instagramUrl = `https://instagram.com/${vendor.instagram_handle}`
+  const instagramUrl = vendor.instagram_handle
+    ? `https://instagram.com/${vendor.instagram_handle}`
+    : null
+  const whatsappUrl = vendor.whatsapp_number
+    ? `https://wa.me/${vendor.whatsapp_number.replace(/^\+/, '')}`
+    : null
+  // Product tiles link out to whichever contact method the vendor provided
+  const productLinkUrl = instagramUrl || whatsappUrl!
+  const productLinkLabel = instagramUrl ? 'View on Instagram' : 'Message on WhatsApp'
 
   return (
     <div className="min-h-screen bg-canvas text-ink">
@@ -155,7 +163,9 @@ export default function VendorDetailPage() {
               </h1>
               {vendor.verified && <span className="text-flash text-sm flex-shrink-0">✓</span>}
             </div>
-            <p className="font-mono text-xs text-ink-muted">@{vendor.instagram_handle}</p>
+            {vendor.instagram_handle && (
+              <p className="font-mono text-xs text-ink-muted">@{vendor.instagram_handle}</p>
+            )}
             <p className="font-mono text-[11px] text-ink-muted mt-0.5">
               {vendor.follower_count.toLocaleString()} followers
             </p>
@@ -177,22 +187,28 @@ export default function VendorDetailPage() {
         <p className="text-sm text-ink-muted leading-relaxed mb-6">{vendor.description}</p>
 
         <div className="flex gap-3 mb-8">
-          <a
-            href={instagramUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => track('visit_instagram', { vendor_id: vendor.id, shop_name: vendor.shop_name })}
-            className="flex-1 bg-flash hover:bg-flash-dark text-[#17140f] font-bold text-xs uppercase tracking-wide py-3 rounded-lg text-center transition-colors"
-          >
-            Visit on Instagram
-          </a>
-          {vendor.whatsapp_number && (
+          {instagramUrl && (
             <a
-              href={`https://wa.me/${vendor.whatsapp_number.replace(/^\+/, '')}`}
+              href={instagramUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => track('visit_instagram', { vendor_id: vendor.id, shop_name: vendor.shop_name })}
+              className="flex-1 bg-flash hover:bg-flash-dark text-[#17140f] font-bold text-xs uppercase tracking-wide py-3 rounded-lg text-center transition-colors"
+            >
+              Visit on Instagram
+            </a>
+          )}
+          {whatsappUrl && (
+            <a
+              href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => track('contact_whatsapp', { vendor_id: vendor.id, shop_name: vendor.shop_name })}
-              className="flex-1 border border-line hover:border-ink-muted text-ink font-bold text-xs uppercase tracking-wide py-3 rounded-lg text-center transition-colors"
+              className={`flex-1 font-bold text-xs uppercase tracking-wide py-3 rounded-lg text-center transition-colors ${
+                instagramUrl
+                  ? 'border border-line hover:border-ink-muted text-ink'
+                  : 'bg-flash hover:bg-flash-dark text-[#17140f]'
+              }`}
             >
               WhatsApp
             </a>
@@ -214,7 +230,7 @@ export default function VendorDetailPage() {
               {products.map((product) => (
                 <a
                   key={product.id}
-                  href={instagramUrl}
+                  href={productLinkUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => track('product_click', { vendor_id: vendor.id, product_name: product.name })}
@@ -234,7 +250,7 @@ export default function VendorDetailPage() {
                     )}
                     <div className="absolute inset-0 bg-canvas/0 group-hover:bg-canvas/40 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
                       <span className="text-xs font-bold uppercase tracking-wide text-ink">
-                        View on Instagram
+                        {productLinkLabel}
                       </span>
                     </div>
                     <button

@@ -132,7 +132,9 @@ export default function VendorDashboard() {
                 <h1 className="font-bold text-xl uppercase tracking-tight mb-1">
                   {vendor.shop_name}
                 </h1>
-                <p className="font-mono text-xs text-ink-muted mb-2">@{vendor.instagram_handle}</p>
+                {vendor.instagram_handle && (
+                  <p className="font-mono text-xs text-ink-muted mb-2">@{vendor.instagram_handle}</p>
+                )}
                 <p className="text-sm text-ink-muted">{vendor.description}</p>
               </div>
             </div>

@@ -266,7 +266,7 @@ export default function AdminDashboard() {
                         </div>
                       </td>
                       <td className="px-5 py-3 text-ink-muted font-mono text-sm">
-                        @{vendor.instagram_handle}
+                        {vendor.instagram_handle ? `@${vendor.instagram_handle}` : '—'}
                       </td>
                       <td className="px-5 py-3 text-ink-muted text-sm capitalize">
                         {vendor.category}

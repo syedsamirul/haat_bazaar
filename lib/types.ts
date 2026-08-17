@@ -1,6 +1,6 @@
 export type Vendor = {
   id: string
-  instagram_handle: string
+  instagram_handle: string | null
   whatsapp_number: string | null
   shop_name: string
   description: string

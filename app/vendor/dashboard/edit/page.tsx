@@ -51,7 +51,7 @@ export default function EditProfilePage() {
 
       setFormData({
         shop_name: data.shop_name,
-        instagram_handle: data.instagram_handle,
+        instagram_handle: data.instagram_handle || '',
         whatsapp_number: data.whatsapp_number || '',
         description: data.description || '',
       })
@@ -79,12 +79,18 @@ export default function EditProfilePage() {
       errors.shop_name = 'Shop name must be at least 2 characters'
     }
 
-    if (!validateInstagramHandle(formData.instagram_handle)) {
+    if (formData.instagram_handle && !validateInstagramHandle(formData.instagram_handle)) {
       errors.instagram_handle = 'Invalid Instagram handle'
     }
 
     if (!validateWhatsapp(formData.whatsapp_number)) {
       errors.whatsapp_number = 'Enter a valid number with country code, e.g. +8801XXXXXXXXX'
+    }
+
+    if (!formData.instagram_handle && !formData.whatsapp_number) {
+      const msg = 'Add at least one so buyers can reach you'
+      errors.instagram_handle = msg
+      errors.whatsapp_number = msg
     }
 
     setValidationErrors(errors)
@@ -153,7 +159,7 @@ export default function EditProfilePage() {
 
       const updates: Record<string, any> = {
         shop_name: formData.shop_name,
-        instagram_handle: formData.instagram_handle.toLowerCase(),
+        instagram_handle: formData.instagram_handle.toLowerCase() || null,
         whatsapp_number: formData.whatsapp_number.replace(/[\s-]/g, '') || null,
         description: formData.description,
         updated_at: new Date(),
@@ -261,7 +267,7 @@ export default function EditProfilePage() {
             {/* Instagram Handle */}
             <div>
               <label className="block text-xs uppercase tracking-wide text-ink-muted mb-1">
-                Instagram Handle *
+                Instagram Handle
               </label>
               <div className="flex">
                 <span className="inline-flex items-center px-3 bg-surface-2 text-ink-muted border border-r-0 border-line rounded-l-lg font-mono text-sm">
@@ -272,7 +278,6 @@ export default function EditProfilePage() {
                   name="instagram_handle"
                   value={formData.instagram_handle}
                   onChange={handleChange}
-                  required
                   className={`w-full px-4 py-2 bg-surface-2 border rounded-r-lg text-sm text-ink font-mono focus:outline-none focus:border-flash ${
                     validationErrors.instagram_handle ? 'border-flash' : 'border-line'
                   }`}
@@ -298,7 +303,7 @@ export default function EditProfilePage() {
                 }`}
                 placeholder="+8801XXXXXXXXX"
               />
-              <p className="text-xs text-ink-muted mt-1">Optional, but lets buyers message you directly.</p>
+              <p className="text-xs text-ink-muted mt-1">Add Instagram, WhatsApp, or both — at least one is required.</p>
               {validationErrors.whatsapp_number && (
                 <p className="text-flash text-xs mt-1">{validationErrors.whatsapp_number}</p>
               )}

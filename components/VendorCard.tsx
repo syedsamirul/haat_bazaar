@@ -24,7 +24,11 @@ export default function VendorCard({ vendor }: { vendor: Vendor }) {
             )}
           </div>
           <p className="font-mono text-xs text-ink-muted mb-2">
-            @{vendor.instagram_handle}
+            {vendor.instagram_handle
+              ? `@${vendor.instagram_handle}`
+              : vendor.whatsapp_number
+              ? 'WhatsApp only'
+              : ''}
           </p>
           <div className="flex items-center justify-between">
             <span className="font-mono text-[11px] text-ink-muted">
