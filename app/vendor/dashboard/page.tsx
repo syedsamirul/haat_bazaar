@@ -143,6 +143,17 @@ export default function VendorDashboard() {
               Edit profile
             </Link>
           </div>
+
+          <div className="flex gap-6 mt-5 pt-5 border-t border-line">
+            <div>
+              <p className="font-mono text-lg font-bold">{vendor.view_count.toLocaleString()}</p>
+              <p className="text-[10px] uppercase tracking-wide text-ink-muted">Page views</p>
+            </div>
+            <div>
+              <p className="font-mono text-lg font-bold text-flash">{vendor.like_count.toLocaleString()}</p>
+              <p className="text-[10px] uppercase tracking-wide text-ink-muted">Page likes</p>
+            </div>
+          </div>
         </div>
 
         {/* Products Section */}
@@ -187,9 +198,12 @@ export default function VendorDashboard() {
                     <h3 className="font-medium text-sm text-ink mb-1 truncate">
                       {product.name}
                     </h3>
-                    <p className="font-mono text-sm text-flash mb-3">
-                      ৳{product.price}
-                    </p>
+                    <div className="flex items-center justify-between mb-3">
+                      <p className="font-mono text-sm text-flash">
+                        ৳{product.price}
+                      </p>
+                      <p className="font-mono text-[10px] text-ink-muted">{product.like_count} likes</p>
+                    </div>
                     <div className="flex gap-2">
                       <Link
                         href={`/vendor/dashboard/products/${product.id}/edit`}

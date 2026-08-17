@@ -6,6 +6,22 @@ import { supabase } from '@/lib/supabase'
 import { Vendor, Product } from '@/lib/types'
 import Link from 'next/link'
 import { track } from '@vercel/analytics'
+import { isVendorLiked, setVendorLiked, isProductLiked, setProductLiked } from '@/lib/likes'
+
+function HeartIcon({ filled }: { filled: boolean }) {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill={filled ? '#FF5A1F' : 'none'}
+      stroke={filled ? '#FF5A1F' : 'currentColor'}
+      strokeWidth="2"
+    >
+      <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z" />
+    </svg>
+  )
+}
 
 export default function VendorDetailPage() {
   const params = useParams()
@@ -14,9 +30,12 @@ export default function VendorDetailPage() {
   const [vendor, setVendor] = useState<Vendor | null>(null)
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
+  const [vendorLiked, setVendorLikedState] = useState(false)
+  const [likedProducts, setLikedProducts] = useState<Set<string>>(new Set())
 
   useEffect(() => {
     fetchVendorAndProducts()
+    supabase.rpc('increment_vendor_view', { target_id: vendorId })
   }, [vendorId])
 
   const fetchVendorAndProducts = async () => {
@@ -30,6 +49,7 @@ export default function VendorDetailPage() {
       if (vendorError || !vendorData) throw vendorError
 
       setVendor(vendorData)
+      setVendorLikedState(isVendorLiked(vendorId))
 
       const { data: productsData } = await supabase
         .from('products')
@@ -39,11 +59,46 @@ export default function VendorDetailPage() {
         .order('created_at', { ascending: false })
 
       setProducts(productsData || [])
+      setLikedProducts(
+        new Set((productsData || []).map((p) => p.id).filter((id) => isProductLiked(id)))
+      )
     } catch (error) {
       console.error('Error fetching vendor:', error)
     } finally {
       setLoading(false)
     }
+  }
+
+  const handleVendorLike = async () => {
+    if (!vendor) return
+    const nextLiked = !vendorLiked
+    setVendorLikedState(nextLiked)
+    setVendor({ ...vendor, like_count: Math.max(0, vendor.like_count + (nextLiked ? 1 : -1)) })
+    setVendorLiked(vendorId, nextLiked)
+    await supabase.rpc(nextLiked ? 'like_vendor' : 'unlike_vendor', { target_id: vendorId })
+    track(nextLiked ? 'vendor_like' : 'vendor_unlike', { vendor_id: vendorId })
+  }
+
+  const handleProductLike = async (e: React.MouseEvent, product: Product) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    const nextLiked = !likedProducts.has(product.id)
+    setLikedProducts((prev) => {
+      const next = new Set(prev)
+      nextLiked ? next.add(product.id) : next.delete(product.id)
+      return next
+    })
+    setProducts((prev) =>
+      prev.map((p) =>
+        p.id === product.id
+          ? { ...p, like_count: Math.max(0, p.like_count + (nextLiked ? 1 : -1)) }
+          : p
+      )
+    )
+    setProductLiked(product.id, nextLiked)
+    await supabase.rpc(nextLiked ? 'like_product' : 'unlike_product', { target_id: product.id })
+    track(nextLiked ? 'product_like' : 'product_unlike', { product_id: product.id })
   }
 
   if (loading) {
@@ -79,7 +134,7 @@ export default function VendorDetailPage() {
 
       <div className="max-w-3xl mx-auto px-5 py-8">
         {/* Vendor header with story-ring avatar */}
-        <div className="flex items-center gap-4 mb-6">
+        <div className="flex items-center gap-4 mb-2">
           <div className="w-20 h-20 rounded-full p-[3px] flex-shrink-0" style={{ background: 'conic-gradient(#FF5A1F, #FFB199, #FF5A1F)' }}>
             <div className="w-full h-full rounded-full bg-canvas p-[3px]">
               <div className="w-full h-full rounded-full overflow-hidden bg-surface-2">
@@ -93,7 +148,7 @@ export default function VendorDetailPage() {
               </div>
             </div>
           </div>
-          <div className="min-w-0">
+          <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
               <h1 className="font-bold text-lg uppercase tracking-tight truncate">
                 {vendor.shop_name}
@@ -105,7 +160,19 @@ export default function VendorDetailPage() {
               {vendor.follower_count.toLocaleString()} followers
             </p>
           </div>
+          <button
+            onClick={handleVendorLike}
+            className="flex flex-col items-center gap-1 flex-shrink-0 px-2"
+            aria-label={vendorLiked ? 'Unlike shop' : 'Like shop'}
+          >
+            <HeartIcon filled={vendorLiked} />
+            <span className="font-mono text-[10px] text-ink-muted">{vendor.like_count}</span>
+          </button>
         </div>
+
+        <p className="font-mono text-[11px] text-ink-muted mb-6">
+          {vendor.view_count.toLocaleString()} views
+        </p>
 
         <p className="text-sm text-ink-muted leading-relaxed mb-6">{vendor.description}</p>
 
@@ -170,9 +237,19 @@ export default function VendorDetailPage() {
                         View on Instagram
                       </span>
                     </div>
+                    <button
+                      onClick={(e) => handleProductLike(e, product)}
+                      className="absolute top-2 right-2 bg-canvas/70 rounded-full p-1.5 flex items-center gap-1"
+                      aria-label={likedProducts.has(product.id) ? 'Unlike product' : 'Like product'}
+                    >
+                      <HeartIcon filled={likedProducts.has(product.id)} />
+                    </button>
                   </div>
                   <p className="text-xs font-medium text-ink truncate">{product.name}</p>
-                  <p className="font-mono text-xs text-flash">৳{product.price.toFixed(2)}</p>
+                  <div className="flex items-center justify-between">
+                    <p className="font-mono text-xs text-flash">৳{product.price.toFixed(2)}</p>
+                    <p className="font-mono text-[10px] text-ink-muted">{product.like_count} likes</p>
+                  </div>
                 </a>
               ))}
             </div>

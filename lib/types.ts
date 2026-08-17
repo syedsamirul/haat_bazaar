@@ -8,6 +8,8 @@ export type Vendor = {
   follower_count: number
   category: string
   verified: boolean
+  view_count: number
+  like_count: number
   created_at: string
   updated_at: string
 }
@@ -21,6 +23,7 @@ export type Product = {
   image_url: string
   category: string
   in_stock: boolean
+  like_count: number
   created_at: string
   updated_at: string
 }
