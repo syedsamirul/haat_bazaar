@@ -10,12 +10,17 @@ export default function LoginPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [unverified, setUnverified] = useState(false)
+  const [resent, setResent] = useState(false)
+  const [resending, setResending] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
+    setUnverified(false)
+    setResent(false)
     setLoading(true)
 
     try {
@@ -28,9 +33,28 @@ export default function LoginPage() {
 
       router.push('/vendor/dashboard')
     } catch (err: any) {
-      setError(err.message || 'Login failed')
+      if (err.code === 'email_not_confirmed' || /email.*not.*confirm/i.test(err.message || '')) {
+        setUnverified(true)
+        setError('Your email isn\'t verified yet. Check your inbox for the confirmation link.')
+      } else {
+        setError(err.message || 'Login failed')
+      }
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleResend = async () => {
+    setResending(true)
+    setResent(false)
+    try {
+      const { error } = await supabase.auth.resend({ type: 'signup', email })
+      if (error) throw error
+      setResent(true)
+    } catch (err: any) {
+      setError(err.message || 'Failed to resend email')
+    } finally {
+      setResending(false)
     }
   }
 
@@ -47,7 +71,17 @@ export default function LoginPage() {
         <form onSubmit={handleLogin} className="space-y-4">
           {error && (
             <div className="bg-surface-2 border border-flash/40 text-flash px-4 py-3 rounded-lg text-sm">
-              {error}
+              <p>{error}</p>
+              {unverified && (
+                <button
+                  type="button"
+                  onClick={handleResend}
+                  disabled={resending || resent}
+                  className="mt-2 text-xs font-bold uppercase underline disabled:opacity-50"
+                >
+                  {resent ? 'Email sent — check your inbox' : resending ? 'Sending...' : 'Resend verification email'}
+                </button>
+              )}
             </div>
           )}
 
