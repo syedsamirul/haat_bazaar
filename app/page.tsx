@@ -39,7 +39,7 @@ export default function Home() {
             href="/auth/signup"
             className="border border-line hover:border-ink-muted text-ink font-bold text-sm uppercase tracking-wide py-3 rounded-lg transition-colors"
           >
-            Sell on Haat Bazaar
+            Sell on Bazaarly
           </Link>
         </div>
       </div>

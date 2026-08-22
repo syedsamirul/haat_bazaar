@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Haat Bazaar",
+  title: "Bazaarly",
   description: "Discover authentic products from Instagram-based small businesses",
 };
 

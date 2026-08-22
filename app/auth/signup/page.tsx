@@ -234,7 +234,7 @@ export default function SignupPage() {
           <div className="mb-4 text-5xl">✓</div>
           <h1 className="font-bold text-xl uppercase tracking-tight text-flash mb-2">Account created</h1>
           <p className="text-sm text-ink-muted mb-4">
-            Welcome to Haat Bazaar. Your account has been successfully created.
+            Welcome to Bazaarly. Your account has been successfully created.
           </p>
           <p className="text-xs text-ink-muted">
             Redirecting to your dashboard...

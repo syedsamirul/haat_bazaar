@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**Haat Bazaar** is an f-commerce (Facebook-commerce) aggregator platform for Instagram-based small businesses in Bangladesh. Vendors connect their Instagram pages to showcase products, and buyers browse, search, and discover sellers directly from the platform.
+**Bazaarly** (formerly Haat Bazaar) is an f-commerce (Facebook-commerce) aggregator platform for Instagram-based small businesses in Bangladesh. Vendors connect their Instagram pages to showcase products, and buyers browse, search, and discover sellers directly from the platform.
 
 ### Core Features
 - Vendor discovery and browsing (by name, category, verification status)
