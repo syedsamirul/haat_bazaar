@@ -2,6 +2,7 @@ export type Vendor = {
   id: string
   instagram_handle: string | null
   whatsapp_number: string | null
+  website_url: string | null
   shop_name: string
   description: string
   profile_image_url: string

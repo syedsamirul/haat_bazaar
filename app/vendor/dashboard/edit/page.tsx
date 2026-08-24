@@ -21,6 +21,7 @@ export default function EditProfilePage() {
     shop_name: '',
     instagram_handle: '',
     whatsapp_number: '',
+    website_url: '',
     description: '',
   })
 
@@ -53,6 +54,7 @@ export default function EditProfilePage() {
         shop_name: data.shop_name,
         instagram_handle: data.instagram_handle || '',
         whatsapp_number: data.whatsapp_number || '',
+        website_url: data.website_url || '',
         description: data.description || '',
       })
       setPreviewUrl(data.profile_image_url || null)
@@ -70,6 +72,16 @@ export default function EditProfilePage() {
   const validateWhatsapp = (number: string) => {
     if (!number) return true // optional field
     return /^\+?[0-9]{8,15}$/.test(number.replace(/[\s-]/g, ''))
+  }
+
+  const validateWebsite = (url: string) => {
+    if (!url) return true // optional field
+    try {
+      const parsed = new URL(url.match(/^https?:\/\//) ? url : `https://${url}`)
+      return !!parsed.hostname.includes('.')
+    } catch {
+      return false
+    }
   }
 
   const validateForm = () => {
@@ -91,6 +103,10 @@ export default function EditProfilePage() {
       const msg = 'Add at least one so buyers can reach you'
       errors.instagram_handle = msg
       errors.whatsapp_number = msg
+    }
+
+    if (!validateWebsite(formData.website_url)) {
+      errors.website_url = 'Enter a valid website address'
     }
 
     setValidationErrors(errors)
@@ -161,6 +177,11 @@ export default function EditProfilePage() {
         shop_name: formData.shop_name,
         instagram_handle: formData.instagram_handle.toLowerCase() || null,
         whatsapp_number: formData.whatsapp_number.replace(/[\s-]/g, '') || null,
+        website_url: formData.website_url
+          ? formData.website_url.match(/^https?:\/\//)
+            ? formData.website_url
+            : `https://${formData.website_url}`
+          : null,
         description: formData.description,
         updated_at: new Date(),
       }
@@ -306,6 +327,27 @@ export default function EditProfilePage() {
               <p className="text-xs text-ink-muted mt-1">Add Instagram, WhatsApp, or both — at least one is required.</p>
               {validationErrors.whatsapp_number && (
                 <p className="text-flash text-xs mt-1">{validationErrors.whatsapp_number}</p>
+              )}
+            </div>
+
+            {/* Website */}
+            <div>
+              <label className="block text-xs uppercase tracking-wide text-ink-muted mb-1">
+                Website
+              </label>
+              <input
+                type="text"
+                name="website_url"
+                value={formData.website_url}
+                onChange={handleChange}
+                className={`w-full px-4 py-2 bg-surface-2 border rounded-lg text-sm text-ink font-mono focus:outline-none focus:border-flash ${
+                  validationErrors.website_url ? 'border-flash' : 'border-line'
+                }`}
+                placeholder="myshop.com"
+              />
+              <p className="text-xs text-ink-muted mt-1">Optional — if you have a website outside Instagram.</p>
+              {validationErrors.website_url && (
+                <p className="text-flash text-xs mt-1">{validationErrors.website_url}</p>
               )}
             </div>
 

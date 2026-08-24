@@ -184,7 +184,19 @@ export default function VendorDetailPage() {
           {vendor.view_count.toLocaleString()} views
         </p>
 
-        <p className="text-sm text-ink-muted leading-relaxed mb-6">{vendor.description}</p>
+        <p className="text-sm text-ink-muted leading-relaxed mb-2">{vendor.description}</p>
+
+        {vendor.website_url && (
+          <a
+            href={vendor.website_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => track('visit_website', { vendor_id: vendor.id, shop_name: vendor.shop_name })}
+            className="inline-block font-mono text-xs text-flash hover:underline mb-4"
+          >
+            {vendor.website_url.replace(/^https?:\/\//, '')} ↗
+          </a>
+        )}
 
         <div className="flex gap-3 mb-8">
           {instagramUrl && (

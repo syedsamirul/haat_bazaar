@@ -133,7 +133,17 @@ export default function VendorDashboard() {
                   {vendor.shop_name}
                 </h1>
                 {vendor.instagram_handle && (
-                  <p className="font-mono text-xs text-ink-muted mb-2">@{vendor.instagram_handle}</p>
+                  <p className="font-mono text-xs text-ink-muted mb-1">@{vendor.instagram_handle}</p>
+                )}
+                {vendor.website_url && (
+                  <a
+                    href={vendor.website_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-mono text-xs text-flash hover:underline block mb-2"
+                  >
+                    {vendor.website_url.replace(/^https?:\/\//, '')}
+                  </a>
                 )}
                 <p className="text-sm text-ink-muted">{vendor.description}</p>
               </div>
