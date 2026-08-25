@@ -11,12 +11,26 @@ export default function SearchBar({ onFiltersChange }: SearchBarProps) {
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState('')
   const [verifiedOnly, setVerifiedOnly] = useState(false)
+  const [minPrice, setMinPrice] = useState('')
+  const [maxPrice, setMaxPrice] = useState('')
+  const [priceError, setPriceError] = useState<string | null>(null)
 
   const handleSearch = () => {
+    const min = minPrice ? Number(minPrice) : undefined
+    const max = maxPrice ? Number(maxPrice) : undefined
+
+    if (min !== undefined && max !== undefined && min > max) {
+      setPriceError('Min price must be less than max')
+      return
+    }
+    setPriceError(null)
+
     onFiltersChange({
       search: search || undefined,
       category: category || undefined,
       verified_only: verifiedOnly,
+      min_price: min,
+      max_price: max,
     })
   }
 
@@ -46,6 +60,27 @@ export default function SearchBar({ onFiltersChange }: SearchBarProps) {
             <option value="other">Other</option>
           </select>
 
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-ink-muted font-mono">৳</span>
+            <input
+              type="number"
+              min="0"
+              placeholder="Min"
+              value={minPrice}
+              onChange={(e) => setMinPrice(e.target.value)}
+              className="w-20 px-2 py-2 bg-surface-2 border border-line rounded-lg text-sm text-ink font-mono focus:outline-none focus:border-flash"
+            />
+            <span className="text-ink-muted text-xs">–</span>
+            <input
+              type="number"
+              min="0"
+              placeholder="Max"
+              value={maxPrice}
+              onChange={(e) => setMaxPrice(e.target.value)}
+              className="w-20 px-2 py-2 bg-surface-2 border border-line rounded-lg text-sm text-ink font-mono focus:outline-none focus:border-flash"
+            />
+          </div>
+
           <label className="flex items-center gap-2 cursor-pointer text-sm text-ink-muted">
             <input
               type="checkbox"
@@ -63,6 +98,7 @@ export default function SearchBar({ onFiltersChange }: SearchBarProps) {
             Search
           </button>
         </div>
+        {priceError && <p className="text-flash text-xs">{priceError}</p>}
       </div>
     </div>
   )
