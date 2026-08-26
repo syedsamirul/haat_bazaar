@@ -159,9 +159,9 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-canvas text-ink">
       {/* Header */}
       <div className="border-b border-line">
-        <div className="max-w-6xl mx-auto px-5 py-4 flex justify-between items-center">
+        <div className="max-w-6xl mx-auto px-5 py-6 flex justify-between items-center">
           <Link href="/" className="flex items-baseline gap-2">
-            <Logo className="text-sm" />
+            <Logo className="text-2xl" />
             <span className="text-ink-muted text-xs">Admin</span>
           </Link>
           <button

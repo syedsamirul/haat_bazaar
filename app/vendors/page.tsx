@@ -98,8 +98,8 @@ export default function VendorsPage() {
 
   return (
     <main className="min-h-screen bg-canvas text-ink">
-      <nav className="flex justify-between items-center px-5 py-4 border-b border-line max-w-5xl mx-auto">
-        <a href="/"><Logo className="text-sm" /></a>
+      <nav className="flex justify-between items-center px-5 py-6 border-b border-line max-w-5xl mx-auto">
+        <a href="/"><Logo className="text-2xl" /></a>
         <a href="/auth/signup" className="text-xs text-ink-muted hover:text-ink transition-colors">
           Sell
         </a>

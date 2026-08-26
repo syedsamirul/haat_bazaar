@@ -4,8 +4,8 @@ import Logo from '@/components/Logo'
 export default function Home() {
   return (
     <main className="min-h-screen bg-canvas text-ink flex flex-col">
-      <nav className="flex justify-between items-center px-5 py-4 border-b border-line">
-        <Logo className="text-sm" />
+      <nav className="flex justify-between items-center px-5 py-6 border-b border-line">
+        <Logo className="text-2xl" />
         <div className="flex gap-5 text-xs text-ink-muted">
           <Link href="/vendors" className="hover:text-ink transition-colors">
             Browse

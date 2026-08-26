@@ -99,8 +99,8 @@ export default function VendorDashboard() {
     <div className="min-h-screen bg-canvas text-ink">
       {/* Header */}
       <div className="border-b border-line">
-        <div className="max-w-5xl mx-auto px-5 py-4 flex justify-between items-center">
-          <Link href="/"><Logo className="text-sm" /></Link>
+        <div className="max-w-5xl mx-auto px-5 py-6 flex justify-between items-center">
+          <Link href="/"><Logo className="text-2xl" /></Link>
           <button
             onClick={handleLogout}
             className="text-xs text-ink-muted hover:text-ink transition-colors"
