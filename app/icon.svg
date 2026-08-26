@@ -1,4 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56 56" width="56" height="56">
-  <rect width="56" height="56" rx="12" fill="#121113"/>
-  <text x="15" y="42" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="34" fill="#FF5A1F">B</text>
+  <rect x="4" y="4" width="48" height="48" rx="12" fill="#FF5A1F"/>
+  <path d="M10 22 L20 13 L36 13 L46 22 Z" fill="#17140F"/>
+  <path d="M18.5 22 L20.5 13 L24 13 L22.3 22 Z" fill="#FF5A1F"/>
+  <path d="M26 22 L26 13 L30 13 L30 22 Z" fill="#FF5A1F"/>
+  <path d="M33.7 22 L31.7 13 L35.2 13 L37.5 22 Z" fill="#FF5A1F"/>
+  <line x1="19" y1="22" x2="19" y2="38" stroke="#17140F" stroke-width="3" stroke-linecap="round"/>
+  <line x1="37" y1="22" x2="37" y2="38" stroke="#17140F" stroke-width="3" stroke-linecap="round"/>
+  <line x1="15" y1="38" x2="41" y2="38" stroke="#17140F" stroke-width="3" stroke-linecap="round"/>
 </svg>
