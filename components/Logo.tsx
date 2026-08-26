@@ -2,8 +2,8 @@ export default function Logo({ className = '' }: { className?: string }) {
   return (
     <span className={`inline-flex items-center gap-2 font-bold tracking-tight uppercase ${className}`}>
       <svg
-        width="1.3em"
-        height="1em"
+        width="2.1em"
+        height="1.6em"
         viewBox="0 0 54 40"
         xmlns="http://www.w3.org/2000/svg"
         aria-hidden="true"
@@ -17,10 +17,7 @@ export default function Logo({ className = '' }: { className?: string }) {
         <line x1="42" y1="16" x2="42" y2="36" stroke="#FF5A1F" strokeWidth="3.5" strokeLinecap="round" />
         <line x1="8" y1="36" x2="46" y2="36" stroke="#FF5A1F" strokeWidth="3.5" strokeLinecap="round" />
       </svg>
-      <span>
-        <span className="text-flash">Bazaar</span>
-        <span className="text-ink">ly</span>
-      </span>
+      <span className="text-ink">Bazaarly</span>
     </span>
   )
 }
