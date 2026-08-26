@@ -1,7 +1,18 @@
 import Link from 'next/link'
 import Logo from '@/components/Logo'
+import { supabase } from '@/lib/supabase'
 
-export default function Home() {
+// Regenerate this page at most once every 24 hours, so the vendor count
+// stays real without hitting the database on every single page load.
+export const revalidate = 86400
+
+export default async function Home() {
+  const { count } = await supabase
+    .from('vendors')
+    .select('*', { count: 'exact', head: true })
+
+  const vendorCount = count ?? 0
+
   return (
     <main className="min-h-screen bg-canvas text-ink flex flex-col">
       <nav className="flex justify-between items-center px-5 py-6 border-b border-line">
@@ -18,10 +29,10 @@ export default function Home() {
 
       <div className="flex-1 flex flex-col justify-center px-5 py-16 max-w-md mx-auto w-full text-center">
         <p className="font-mono text-xs text-flash mb-4 tracking-wide">
-          142 vendors · updated daily
+          {vendorCount.toLocaleString()} vendor{vendorCount !== 1 ? 's' : ''} · updated daily
         </p>
         <h1 className="text-3xl font-bold uppercase tracking-tight leading-tight mb-4 text-balance">
-          Your favorite Insta shops, all in one haat.
+          Your favorite Insta shops, all in one bazaar.
         </h1>
         <p className="text-sm text-ink-muted mb-10 leading-relaxed">
           Browse Instagram-based small businesses from across Bangladesh — search,
