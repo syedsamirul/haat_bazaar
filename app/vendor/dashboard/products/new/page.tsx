@@ -5,12 +5,18 @@ import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import Link from 'next/link'
 
+type MediaItem = {
+  file: File
+  previewUrl: string
+  type: 'image' | 'video'
+}
+
 export default function NewProductPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [imageFile, setImageFile] = useState<File | null>(null)
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+  const [mediaItems, setMediaItems] = useState<MediaItem[]>([])
+  const [coverIndex, setCoverIndex] = useState(0)
 
   const [formData, setFormData] = useState({
     name: '',
@@ -26,42 +32,66 @@ export default function NewProductPage() {
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        setError('Image must be less than 5MB')
-        return
-      }
+  const handleFilesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || [])
+    if (files.length === 0) return
 
-      setImageFile(file)
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setPreviewUrl(reader.result as string)
-      }
-      reader.readAsDataURL(file)
+    const oversized = files.find((f) => f.size > 25 * 1024 * 1024)
+    if (oversized) {
+      setError(`"${oversized.name}" is over 25MB — please use a smaller file`)
+      return
     }
+
+    const newItems: MediaItem[] = files.map((file) => ({
+      file,
+      previewUrl: URL.createObjectURL(file),
+      type: file.type.startsWith('video') ? 'video' : 'image',
+    }))
+
+    setMediaItems((prev) => [...prev, ...newItems])
+    setError(null)
+    e.target.value = ''
   }
 
-  const uploadProductImage = async (vendorId: string) => {
-    if (!imageFile) return null
+  const removeMedia = (index: number) => {
+    setMediaItems((prev) => prev.filter((_, i) => i !== index))
+    setCoverIndex((prev) => {
+      if (index === prev) return 0
+      if (index < prev) return prev - 1
+      return prev
+    })
+  }
 
-    const fileExt = imageFile.name.split('.').pop()
-    const fileName = `${vendorId}/${Date.now()}.${fileExt}`
+  const uploadAllMedia = async (vendorId: string, productId: string) => {
+    const uploaded: { url: string; type: 'image' | 'video' }[] = []
 
-    const { error } = await supabase.storage
-      .from('product-images')
-      .upload(fileName, imageFile, { upsert: true })
+    for (let i = 0; i < mediaItems.length; i++) {
+      const item = mediaItems[i]
+      const fileExt = item.file.name.split('.').pop()
+      const fileName = `${vendorId}/${productId}-${i}-${Date.now()}.${fileExt}`
 
-    if (error) throw error
+      const { error } = await supabase.storage
+        .from('product-images')
+        .upload(fileName, item.file, { upsert: true })
 
-    const { data } = supabase.storage.from('product-images').getPublicUrl(fileName)
-    return data.publicUrl
+      if (error) throw error
+
+      const { data } = supabase.storage.from('product-images').getPublicUrl(fileName)
+      uploaded.push({ url: data.publicUrl, type: item.type })
+    }
+
+    return uploaded
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
+
+    if (mediaItems.length === 0) {
+      setError('Add at least one photo or video')
+      return
+    }
+
     setLoading(true)
 
     try {
@@ -74,19 +104,43 @@ export default function NewProductPage() {
         return
       }
 
-      const imageUrl = await uploadProductImage(user.id)
+      // Create the product first so we have an id to namespace media under
+      const { data: product, error: productError } = await supabase
+        .from('products')
+        .insert({
+          vendor_id: user.id,
+          name: formData.name,
+          description: formData.description,
+          price: parseFloat(formData.price),
+          category: formData.category,
+          in_stock: true,
+        })
+        .select()
+        .single()
 
-      const { error } = await supabase.from('products').insert({
-        vendor_id: user.id,
-        name: formData.name,
-        description: formData.description,
-        price: parseFloat(formData.price),
-        image_url: imageUrl,
-        category: formData.category,
-        in_stock: true,
-      })
+      if (productError || !product) throw productError
 
-      if (error) throw error
+      const uploaded = await uploadAllMedia(user.id, product.id)
+
+      const mediaRows = uploaded.map((m, i) => ({
+        product_id: product.id,
+        media_url: m.url,
+        media_type: m.type,
+        is_cover: i === coverIndex,
+        sort_order: i,
+      }))
+
+      const { error: mediaError } = await supabase.from('product_media').insert(mediaRows)
+      if (mediaError) throw mediaError
+
+      // Keep products.image_url synced to the cover image for places that
+      // only show a single thumbnail (vendor page grid, search results)
+      const { error: coverError } = await supabase
+        .from('products')
+        .update({ image_url: uploaded[coverIndex].url })
+        .eq('id', product.id)
+
+      if (coverError) throw coverError
 
       router.push('/vendor/dashboard')
     } catch (err: any) {
@@ -182,28 +236,58 @@ export default function NewProductPage() {
 
             <div>
               <label className="block text-xs uppercase tracking-wide text-ink-muted mb-2">
-                Product Photo
+                Photos & Videos
               </label>
-              <div className="flex items-center gap-4">
-                {previewUrl ? (
-                  <div className="w-24 h-24 rounded-lg overflow-hidden border border-flash flex-shrink-0">
-                    <img src={previewUrl} alt="Preview" className="w-full h-full object-cover" />
-                  </div>
-                ) : (
-                  <div className="w-24 h-24 rounded-lg border border-dashed border-line flex items-center justify-center bg-surface-2 text-ink-muted flex-shrink-0">
-                    📷
-                  </div>
-                )}
-                <div>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    className="block text-sm text-ink-muted file:mr-4 file:px-4 file:py-2 file:rounded-lg file:border-0 file:bg-flash file:text-[#17140f] file:font-bold file:cursor-pointer hover:file:bg-flash-dark"
-                  />
-                  <p className="text-xs text-ink-muted mt-1">Max 5MB • JPG, PNG, GIF</p>
+
+              {mediaItems.length > 0 && (
+                <div className="grid grid-cols-3 gap-3 mb-4">
+                  {mediaItems.map((item, i) => (
+                    <div key={i} className="relative">
+                      <div
+                        className={`aspect-square rounded-lg overflow-hidden border-2 ${
+                          i === coverIndex ? 'border-flash' : 'border-line'
+                        }`}
+                      >
+                        {item.type === 'video' ? (
+                          <video src={item.previewUrl} className="w-full h-full object-cover" muted />
+                        ) : (
+                          <img src={item.previewUrl} className="w-full h-full object-cover" alt="" />
+                        )}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => removeMedia(i)}
+                        className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-flash text-[#17140f] text-xs font-bold flex items-center justify-center"
+                        aria-label="Remove"
+                      >
+                        ✕
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setCoverIndex(i)}
+                        className={`w-full mt-1 text-[10px] font-bold uppercase tracking-wide py-1 rounded ${
+                          i === coverIndex
+                            ? 'bg-flash text-[#17140f]'
+                            : 'border border-line text-ink-muted hover:border-ink-muted'
+                        }`}
+                      >
+                        {i === coverIndex ? 'Cover' : 'Set as cover'}
+                      </button>
+                    </div>
+                  ))}
                 </div>
-              </div>
+              )}
+
+              <input
+                type="file"
+                accept="image/*,video/*"
+                multiple
+                onChange={handleFilesChange}
+                className="block text-sm text-ink-muted file:mr-4 file:px-4 file:py-2 file:rounded-lg file:border-0 file:bg-flash file:text-[#17140f] file:font-bold file:cursor-pointer hover:file:bg-flash-dark"
+              />
+              <p className="text-xs text-ink-muted mt-1">
+                Max 25MB each • The cover photo shows on your shop page
+              </p>
             </div>
 
             <div className="flex gap-4">

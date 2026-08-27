@@ -7,7 +7,7 @@ type ProductWithVendor = Product & {
 
 export default function ProductCard({ product }: { product: ProductWithVendor }) {
   return (
-    <Link href={`/vendors/${product.vendor.id}`}>
+    <Link href={`/vendors/${product.vendor.id}/products/${product.id}`}>
       <div className="bg-surface border border-line rounded-lg overflow-hidden hover:border-ink-muted transition-colors cursor-pointer">
         <div className="aspect-square bg-surface-2 relative">
           {product.image_url && (

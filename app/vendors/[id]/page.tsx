@@ -128,9 +128,6 @@ export default function VendorDetailPage() {
   const whatsappUrl = vendor.whatsapp_number
     ? `https://wa.me/${vendor.whatsapp_number.replace(/^\+/, '')}`
     : null
-  // Product tiles link out to whichever contact method the vendor provided
-  const productLinkUrl = instagramUrl || whatsappUrl!
-  const productLinkLabel = instagramUrl ? 'View on Instagram' : 'Message on WhatsApp'
 
   return (
     <div className="min-h-screen bg-canvas text-ink">
@@ -240,11 +237,9 @@ export default function VendorDetailPage() {
           ) : (
             <div className="grid grid-cols-2 gap-2">
               {products.map((product) => (
-                <a
+                <Link
                   key={product.id}
-                  href={productLinkUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href={`/vendors/${vendor.id}/products/${product.id}`}
                   onClick={() => track('product_click', { vendor_id: vendor.id, product_name: product.name })}
                   className="group block"
                 >
@@ -262,7 +257,7 @@ export default function VendorDetailPage() {
                     )}
                     <div className="absolute inset-0 bg-canvas/0 group-hover:bg-canvas/40 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
                       <span className="text-xs font-bold uppercase tracking-wide text-ink">
-                        {productLinkLabel}
+                        View details
                       </span>
                     </div>
                     <button
@@ -278,7 +273,7 @@ export default function VendorDetailPage() {
                     <p className="font-mono text-xs text-flash">৳{product.price.toFixed(2)}</p>
                     <p className="font-mono text-[10px] text-ink-muted">{product.like_count} likes</p>
                   </div>
-                </a>
+                </Link>
               ))}
             </div>
           )}

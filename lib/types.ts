@@ -29,6 +29,16 @@ export type Product = {
   updated_at: string
 }
 
+export type ProductMedia = {
+  id: string
+  product_id: string
+  media_url: string
+  media_type: 'image' | 'video'
+  is_cover: boolean
+  sort_order: number
+  created_at: string
+}
+
 export type SearchFilters = {
   search?: string
   category?: string
