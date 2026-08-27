@@ -180,6 +180,15 @@ export default function AdminDashboard() {
           </div>
         )}
 
+        <div className="flex justify-end mb-6">
+          <Link
+            href="/admin/add-vendor"
+            className="bg-flash hover:bg-flash-dark text-[#17140f] text-xs font-bold uppercase tracking-wide px-4 py-2 rounded-lg transition-colors"
+          >
+            + Add vendor manually
+          </Link>
+        </div>
+
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <div className="bg-surface border border-line rounded-lg p-5">
