@@ -123,7 +123,7 @@ export default function EditProductPage() {
 
       const { error } = await supabase.storage
         .from('product-images')
-        .upload(fileName, item.file, { upsert: true })
+        .upload(fileName, item.file)
 
       if (error) throw error
 
