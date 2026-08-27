@@ -9,12 +9,13 @@ export default function NewProductPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [imageFile, setImageFile] = useState<File | null>(null)
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
 
   const [formData, setFormData] = useState({
     name: '',
     description: '',
     price: '',
-    image_url: '',
     category: 'other',
   })
 
@@ -23,6 +24,39 @@ export default function NewProductPage() {
   ) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
+  }
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        setError('Image must be less than 5MB')
+        return
+      }
+
+      setImageFile(file)
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setPreviewUrl(reader.result as string)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
+  const uploadProductImage = async (vendorId: string) => {
+    if (!imageFile) return null
+
+    const fileExt = imageFile.name.split('.').pop()
+    const fileName = `${vendorId}/${Date.now()}.${fileExt}`
+
+    const { error } = await supabase.storage
+      .from('product-images')
+      .upload(fileName, imageFile, { upsert: true })
+
+    if (error) throw error
+
+    const { data } = supabase.storage.from('product-images').getPublicUrl(fileName)
+    return data.publicUrl
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -40,12 +74,14 @@ export default function NewProductPage() {
         return
       }
 
+      const imageUrl = await uploadProductImage(user.id)
+
       const { error } = await supabase.from('products').insert({
         vendor_id: user.id,
         name: formData.name,
         description: formData.description,
         price: parseFloat(formData.price),
-        image_url: formData.image_url,
+        image_url: imageUrl,
         category: formData.category,
         in_stock: true,
       })
@@ -146,25 +182,28 @@ export default function NewProductPage() {
 
             <div>
               <label className="block text-xs uppercase tracking-wide text-ink-muted mb-2">
-                Image URL
+                Product Photo
               </label>
-              <input
-                type="url"
-                name="image_url"
-                value={formData.image_url}
-                onChange={handleChange}
-                className="w-full px-4 py-2 bg-surface-2 border border-line rounded-lg text-sm text-ink focus:outline-none focus:border-flash"
-                placeholder="https://example.com/image.jpg"
-              />
-              {formData.image_url && (
-                <div className="mt-4 aspect-square bg-surface-2 rounded-lg overflow-hidden max-w-xs">
-                  <img
-                    src={formData.image_url}
-                    alt="Preview"
-                    className="w-full h-full object-cover"
+              <div className="flex items-center gap-4">
+                {previewUrl ? (
+                  <div className="w-24 h-24 rounded-lg overflow-hidden border border-flash flex-shrink-0">
+                    <img src={previewUrl} alt="Preview" className="w-full h-full object-cover" />
+                  </div>
+                ) : (
+                  <div className="w-24 h-24 rounded-lg border border-dashed border-line flex items-center justify-center bg-surface-2 text-ink-muted flex-shrink-0">
+                    📷
+                  </div>
+                )}
+                <div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className="block text-sm text-ink-muted file:mr-4 file:px-4 file:py-2 file:rounded-lg file:border-0 file:bg-flash file:text-[#17140f] file:font-bold file:cursor-pointer hover:file:bg-flash-dark"
                   />
+                  <p className="text-xs text-ink-muted mt-1">Max 5MB • JPG, PNG, GIF</p>
                 </div>
-              )}
+              </div>
             </div>
 
             <div className="flex gap-4">

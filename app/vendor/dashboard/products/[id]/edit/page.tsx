@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
-import { Product } from '@/lib/types'
 import Link from 'next/link'
 
 export default function EditProductPage() {
@@ -12,13 +11,15 @@ export default function EditProductPage() {
   const productId = params.id as string
 
   const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [imageFile, setImageFile] = useState<File | null>(null)
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
 
   const [formData, setFormData] = useState({
     name: '',
     description: '',
     price: '',
-    image_url: '',
     category: 'other',
   })
 
@@ -40,9 +41,9 @@ export default function EditProductPage() {
         name: data.name,
         description: data.description || '',
         price: data.price.toString(),
-        image_url: data.image_url || '',
         category: data.category || 'other',
       })
+      setPreviewUrl(data.image_url || null)
     } catch (err: any) {
       setError(err.message || 'Failed to load product')
     } finally {
@@ -57,23 +58,67 @@ export default function EditProductPage() {
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        setError('Image must be less than 5MB')
+        return
+      }
+
+      setImageFile(file)
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setPreviewUrl(reader.result as string)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
+  const uploadProductImage = async (vendorId: string) => {
+    if (!imageFile) return null
+
+    const fileExt = imageFile.name.split('.').pop()
+    const fileName = `${vendorId}/${productId}-${Date.now()}.${fileExt}`
+
+    const { error } = await supabase.storage
+      .from('product-images')
+      .upload(fileName, imageFile, { upsert: true })
+
+    if (error) throw error
+
+    const { data } = supabase.storage.from('product-images').getPublicUrl(fileName)
+    return data.publicUrl
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
-    setLoading(true)
+    setSaving(true)
 
     try {
-      const { error } = await supabase
-        .from('products')
-        .update({
-          name: formData.name,
-          description: formData.description,
-          price: parseFloat(formData.price),
-          image_url: formData.image_url,
-          category: formData.category,
-          updated_at: new Date(),
-        })
-        .eq('id', productId)
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+
+      if (!user) {
+        router.push('/auth/login')
+        return
+      }
+
+      const updates: Record<string, any> = {
+        name: formData.name,
+        description: formData.description,
+        price: parseFloat(formData.price),
+        category: formData.category,
+        updated_at: new Date(),
+      }
+
+      if (imageFile) {
+        updates.image_url = await uploadProductImage(user.id)
+      }
+
+      const { error } = await supabase.from('products').update(updates).eq('id', productId)
 
       if (error) throw error
 
@@ -81,7 +126,7 @@ export default function EditProductPage() {
     } catch (err: any) {
       setError(err.message || 'Failed to update product')
     } finally {
-      setLoading(false)
+      setSaving(false)
     }
   }
 
@@ -176,33 +221,37 @@ export default function EditProductPage() {
 
             <div>
               <label className="block text-xs uppercase tracking-wide text-ink-muted mb-2">
-                Image URL
+                Product Photo
               </label>
-              <input
-                type="url"
-                name="image_url"
-                value={formData.image_url}
-                onChange={handleChange}
-                className="w-full px-4 py-2 bg-surface-2 border border-line rounded-lg text-sm text-ink focus:outline-none focus:border-flash"
-              />
-              {formData.image_url && (
-                <div className="mt-4 aspect-square bg-surface-2 rounded-lg overflow-hidden max-w-xs">
-                  <img
-                    src={formData.image_url}
-                    alt="Preview"
-                    className="w-full h-full object-cover"
+              <div className="flex items-center gap-4">
+                {previewUrl ? (
+                  <div className="w-24 h-24 rounded-lg overflow-hidden border border-flash flex-shrink-0">
+                    <img src={previewUrl} alt="Preview" className="w-full h-full object-cover" />
+                  </div>
+                ) : (
+                  <div className="w-24 h-24 rounded-lg border border-dashed border-line flex items-center justify-center bg-surface-2 text-ink-muted flex-shrink-0">
+                    📷
+                  </div>
+                )}
+                <div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className="block text-sm text-ink-muted file:mr-4 file:px-4 file:py-2 file:rounded-lg file:border-0 file:bg-flash file:text-[#17140f] file:font-bold file:cursor-pointer hover:file:bg-flash-dark"
                   />
+                  <p className="text-xs text-ink-muted mt-1">Max 5MB • Leave blank to keep current photo</p>
                 </div>
-              )}
+              </div>
             </div>
 
             <div className="flex gap-4">
               <button
                 type="submit"
-                disabled={loading}
+                disabled={saving}
                 className="flex-1 bg-flash hover:bg-flash-dark disabled:opacity-50 text-[#17140f] font-bold text-sm uppercase tracking-wide py-3 rounded-lg transition-colors"
               >
-                {loading ? 'Saving...' : 'Save changes'}
+                {saving ? 'Saving...' : 'Save changes'}
               </button>
               <Link
                 href="/vendor/dashboard"
